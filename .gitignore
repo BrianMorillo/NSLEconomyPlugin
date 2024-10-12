@@ -1,0 +1,22 @@
+# Unreal Engine specific folders
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# Ignore temporary files
+*.tmp
+*.log
+*.sav
+*.user
+*.suo
+*.cache
+*.dat
+*.obj
+*.pdb
+*.VC.db
+*.VC.opendb
+*.sln
+
+# MacOS specific file
+.DS_Store
