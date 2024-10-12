@@ -47,7 +47,7 @@ UNSLEconMoney* UNSLEconCurrency::CreateCurrencyMoney(const TArray<FNSLEconCurren
 
 	// Create a new UNSLEconMoney object
 	UNSLEconMoney* NewMoney = NewObject<UNSLEconMoney>(this, UNSLEconMoney::StaticClass());
-	NewMoney->SetCurrency(this);
+	NewMoney->Initialize(this);
 	NewMoney->AddCurrencyUnits(CurrUnitAmountList);
 	return NewMoney;
 }
@@ -61,7 +61,6 @@ int64 UNSLEconCurrency::CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAm
 
 		if (CurrencyUnitPtr == nullptr)
 		{
-			//UE_LOG(LogTemp, Error, TEXT("The %s is not a unit of the %s."), *CurrUnitAmount.CurrencyUnitId.ToString(), CurrencyName);
 			return 0;
 		}
 

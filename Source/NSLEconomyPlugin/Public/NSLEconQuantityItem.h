@@ -18,6 +18,7 @@ class NSLECONOMYPLUGIN_API UNSLEconQuantityItem : public UNSLEconItem
     UNSLEconQuantityItem();
 
     // Quantity of the item
+public:
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
     int32 Quantity;
 };

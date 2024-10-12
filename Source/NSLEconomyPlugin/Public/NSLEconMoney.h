@@ -44,7 +44,8 @@ public:
         UNSLEconMoney* Substract(const UNSLEconMoney* Other);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        void SetCurrency(UNSLEconCurrency* InCurrency);
+        void Initialize(UNSLEconCurrency* InCurrency);
+
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         UNSLEconMoney* AddCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);

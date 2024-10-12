@@ -10,18 +10,17 @@ UNSLEconMoney::UNSLEconMoney()
 {
 }
 
-//void UNSLEconMoney::Initialize(int64 InUnits, UNSLEconCurrency* InCurrency) 
-//{
-//    if (Currency.IsValid())
-//    {
-//        UE_LOG(LogTemp, Error, TEXT("UObject already initialized."));
-//        return;
-//    }
-//
-//    Currency = InCurrency;
-//    Units = InUnits;
-//
-//}
+void UNSLEconMoney::Initialize(UNSLEconCurrency* InCurrency) 
+{
+    if (Currency.IsValid())
+    {
+        UE_LOG(LogTemp, Error, TEXT("Currency already initialized"));
+        return;
+    }
+
+    Currency = InCurrency;
+    Units = 0;
+}
 
 FString UNSLEconMoney::ToFormattedString()
 {
@@ -49,11 +48,6 @@ UNSLEconMoney* UNSLEconMoney::Substract(const UNSLEconMoney* Other)
 
     Units -= Other->Units;
     return this;
-}
-
-void UNSLEconMoney::SetCurrency(UNSLEconCurrency* InCurrency)
-{
-    Currency = InCurrency;
 }
 
 UNSLEconMoney* UNSLEconMoney::AddCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
