@@ -6,6 +6,9 @@
 #include "UObject/NoExportTypes.h"
 #include "NSLEconShop.generated.h"
 
+class UNSLEconContainerItem;
+struct FNSLEconContainerEntry;
+
 /**
  * 
  */
@@ -20,6 +23,9 @@ private:
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
     UNSLEconContainerItem* Inventory;
 
+    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    TMap<FGuid, float> ItemMarkupMap;
+
 public:
     // Constructor
     UNSLEconShop();
@@ -30,7 +36,7 @@ public:
 
     // Function to add an item to the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddItemToInventory(UNSLEconQuantityItem* NewItem);
+    void AddItemToInventory(int32 AmountOfItems, float PriceMarkupPercentage, UNSLEconItem* NewItem);
 
     // Function to remove an item from the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
@@ -38,9 +44,15 @@ public:
 
     // Function to buy an item (removes item from inventory)
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconItem* BuyItem(const FGuid& ItemId);
+    const UNSLEconItem* BuyItem(const FGuid& ItemId, UNSLEconMoney* MoneyToBuyWith);
 
     // Get inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconContainerItem* GetInventory() const;
+    const TMap<FString, FGuid> GetItemsId() const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    const FNSLEconContainerEntry GetItemDetails(const FGuid& ItemId) const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void AdjustItemMarkup(const FGuid& ItemId, float PriceMarkupPercentage);
 };

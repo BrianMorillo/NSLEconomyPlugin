@@ -3,7 +3,7 @@
 
 #include "NSLEconCurrency.h"
 #include "NSLEconCurrencyUnit.h"
-#include "NSLEconCurrencyTypes.h"
+#include "NSLEconTypes.h"
 #include "NSLEconMoney.h"
 
 UNSLEconCurrency::UNSLEconCurrency()

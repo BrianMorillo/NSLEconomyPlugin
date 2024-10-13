@@ -46,7 +46,6 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         void Initialize(UNSLEconCurrency* InCurrency);
 
-
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         UNSLEconMoney* AddCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
 
@@ -56,4 +55,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         FGuid GetCurrencyId() const { return Currency->GetCurrencyId(); }
 
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+        int64 GetValueInUnits() const;
+       
 };

@@ -2,7 +2,7 @@
 
 
 #include "NSLEconMoney.h"
-#include "NSLEconCurrencyTypes.h"
+#include "NSLEconTypes.h"
 
 UNSLEconMoney::UNSLEconMoney()
     : Currency(nullptr)
@@ -97,5 +97,10 @@ bool UNSLEconMoney::IsOperationValid(const UNSLEconMoney* Other)
     }
 
     return true;
+}
+
+int64 UNSLEconMoney::GetValueInUnits() const
+{
+    return Units;
 }
 

@@ -6,6 +6,7 @@
 #include "NSLEconItem.h"
 #include "NSLEconContainerItem.generated.h"
 class UNSLEconQuantityItem;
+struct FNSLEconContainerEntry;
 /**
  * 
  */
@@ -15,17 +16,19 @@ class NSLECONOMYPLUGIN_API UNSLEconContainerItem : public UNSLEconItem
 	GENERATED_BODY()
 	
 private:
-    // Map of contained items using FGuid as key
-
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    TMap<FGuid, UNSLEconQuantityItem*> ContainedItems;
-    // Constructor
-    UNSLEconContainerItem();
+
+    UDataTable* ItemTable;
 
 public:
+    UNSLEconContainerItem();
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void Initialize();
+
     // Function to add an item
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddItem(UNSLEconQuantityItem* NewItem);
+    void AddItem(int32 QuantityOfItems, UNSLEconItem* NewItem);
 
     // Function to remove an item by its FGuid
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
@@ -33,5 +36,21 @@ public:
 
     // Function to get an item by its FGuid
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconItem* GetItem(const FGuid& ItemId) const;
+    const UNSLEconItem* GetItem(const FGuid& ItemId) const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void SetItemQuantityTo(int32 NewQuantity, const FGuid& ItemId);
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    bool IsInitialized() const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void InitializationCheck() const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    const FNSLEconContainerEntry GetEntry(const FGuid& ItemId) const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    const TMap<FString, FGuid> GetItemsId() const;
+
 };
