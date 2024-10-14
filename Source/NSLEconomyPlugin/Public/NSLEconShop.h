@@ -34,18 +34,18 @@ public:
 
     // Function to add an item to the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddItem(UNSLEconShopItemEntry* ShopItemEntry);
+    void AddItemEntry(UNSLEconShopItemEntry* ShopItemEntry);
 
     // Function to remove an item from the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void RemoveItem(const FGuid& ItemId);
+    void RemoveItemEntry(const FGuid& ItemId);
 
     // Function to buy an item (removes item from inventory)
-    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    //const UNSLEconItem* BuyItem(const FGuid& ItemId, UNSLEconMoney* MoneyToBuyWith);
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    const FShopItemInfo BuyItem(const FGuid& ItemId, int32 QuantityToBuy, UNSLEconMoney* MoneyToBuyWith);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const UNSLEconShopItemEntry* GetItem(const FGuid& ItemId);
+    const FShopItemInfo GetItemInfo(const FGuid& ItemId);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     TArray<FShopItemInfo> GetItems();

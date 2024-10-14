@@ -5,6 +5,7 @@
 #include "NSLEconCurrencyUnit.h"
 #include "NSLEconTypes.h"
 #include "NSLEconMoney.h"
+#include "NSLEconMoneyUtil.h"
 
 UNSLEconCurrency::UNSLEconCurrency()
 	: CurrencyName(TEXT("DefaultCurrency"))
@@ -59,6 +60,17 @@ int64 UNSLEconCurrency::CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAm
 
 		if (CurrencyUnitPtr == nullptr)
 		{
+			return 0;
+		}
+
+		if (!UNSLEconMoneyUtil::IsUnitsScalingAllowed(
+				CurrUnitAmount.Amount,
+				CurrencyUnitPtr->GetUnitConversionFactor()) || 
+			!UNSLEconMoneyUtil::IsUnitsAdditionAllowed(
+				TotalUnits,
+				CurrUnitAmount.Amount * CurrencyUnitPtr->GetUnitConversionFactor()))
+		{
+			UE_LOG(LogTemp, Error, TEXT("CurrencyUnits conversion exceeds the allowable max result"));
 			return 0;
 		}
 

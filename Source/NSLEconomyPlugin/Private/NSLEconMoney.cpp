@@ -3,6 +3,7 @@
 
 #include "NSLEconMoney.h"
 #include "NSLEconTypes.h"
+#include "NSLEconMoneyUtil.h"
 
 UNSLEconMoney::UNSLEconMoney()
     : Currency(nullptr)
@@ -33,6 +34,12 @@ UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
     if (!IsOperationValid(Other))
     {
         UE_LOG(LogTemp, Error, TEXT("Cannot add different currency types!"));
+        return nullptr;
+    }
+
+    if (!UNSLEconMoneyUtil::IsAdditionAllowed(this, Other)) {
+        UE_LOG(LogTemp, Error, TEXT("Addition exceeds the allowable max result"));
+        return nullptr;
     }
 
     Units += Other->Units;
@@ -44,6 +51,12 @@ UNSLEconMoney* UNSLEconMoney::Substract(const UNSLEconMoney* Other)
     if (!IsOperationValid(Other))
     {
         UE_LOG(LogTemp, Error, TEXT("Cannot substract different currency types!"));
+        return nullptr;
+    }
+
+    if (!UNSLEconMoneyUtil::IsSubstractionAllowed(this, Other)) {
+        UE_LOG(LogTemp, Error, TEXT("Substraction exceeds the allowable max result"));
+        return nullptr;
     }
 
     Units -= Other->Units;
@@ -52,12 +65,23 @@ UNSLEconMoney* UNSLEconMoney::Substract(const UNSLEconMoney* Other)
 
 UNSLEconMoney* UNSLEconMoney::AddCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
 {
-    Units += CalcCurrencyUnits(CurrUnitAmountList);
+    int64 CalculatedUnits = CalcCurrencyUnits(CurrUnitAmountList);
+    if (!UNSLEconMoneyUtil::IsUnitsAdditionAllowed(Units, CalculatedUnits)) {
+        UE_LOG(LogTemp, Error, TEXT("Addition exceeds the allowable max result"));
+        return nullptr;
+    }
+    Units += CalculatedUnits;
     return this;
 }
 
 UNSLEconMoney* UNSLEconMoney::SubstractCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
 {
+    int64 CalculatedUnits = CalcCurrencyUnits(CurrUnitAmountList);
+    if (!UNSLEconMoneyUtil::IsUnitsSubstractionAllowed(Units, CalculatedUnits)) {
+        UE_LOG(LogTemp, Error, TEXT("Substraction exceeds the allowable max result"));
+        return nullptr;
+    }
+
     Units -= CalcCurrencyUnits(CurrUnitAmountList);
     return this;
 }
@@ -72,10 +96,18 @@ int64 UNSLEconMoney::CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> 
     else {
         for (const FNSLEconCurrencyUnitAmount& CurrUnitAmount : CurrUnitAmountList)
         {
-            if (!CurrUnitAmount.CurrencyUnitId.IsValid())
+            if (CurrUnitAmount.CurrencyUnitId.IsValid())
             {
-                CalculatedUnits += CurrUnitAmount.Amount;
+                UE_LOG(LogTemp, Error, TEXT("FNSLEconCurrencyUnitAmount list invalid for operation"));
+                return 0;
             }
+
+            if (!UNSLEconMoneyUtil::IsUnitsAdditionAllowed(CalculatedUnits, CurrUnitAmount.Amount)) {
+                UE_LOG(LogTemp, Error, TEXT("CurrencyUnitsToUnits conversion exceeds the allowable max result"));
+                return 0;
+            }
+
+            CalculatedUnits += CurrUnitAmount.Amount;
         }
     }
 
@@ -111,6 +143,11 @@ const UNSLEconCurrency* UNSLEconMoney::GetCurrency()
 
 UNSLEconMoney* UNSLEconMoney::ScaledBy(UNSLEconMoney* MoneyToScale, float PercentageToScaleBy)
 {
+    if (!UNSLEconMoneyUtil::IsScalingAllowed(MoneyToScale, PercentageToScaleBy)) {
+        UE_LOG(LogTemp, Error, TEXT("Scaling operation exceeds the allowable max result"));
+        return nullptr;
+    }
+
     UNSLEconMoney* ScaledMoney = NewObject<UNSLEconMoney>();
     ScaledMoney->Initialize(MoneyToScale->Currency.Get());
     int IPercentageToScaleBy = (PercentageToScaleBy * 100);
@@ -118,3 +155,45 @@ UNSLEconMoney* UNSLEconMoney::ScaledBy(UNSLEconMoney* MoneyToScale, float Percen
     return ScaledMoney;
 }
 
+
+//bool UNSLEconMoney::IsAdditionAllowed(int64 AmountA, int64 AmountB)
+//{
+//    if (AmountA > 0 && AmountB > 0 && AmountA > (INT64_MAX - AmountB)) 
+//    {
+//        return false;
+//    }
+//    return true;
+//}
+//
+//bool UNSLEconMoney::IsSubstractionAllowed(int64 AmountA, int64 AmountB)
+//{
+//    if (AmountA < 0 && AmountB < 0 && AmountA < (INT64_MIN - AmountB))
+//    {
+//        return false;
+//    }
+//    return true;
+//}
+
+/*
+bool UNSLEconMoney::IsSubstractionAllowed(int64 AmountA, int64 AmountB)
+{
+    if (AmountA > (INT64_MAX - AmountB)) {
+        UE_LOG(LogTemp, Error, TEXT("Amount exceeds the allowable max cost"));
+        return false;
+    }
+
+    return true;
+
+
+   int64 PriceToPay = Entry->ItemPtr->Value->GetValueInUnits() * QuantityToBuy;
+    if (Entry->ItemPtr->Value->GetValueInUnits() > INT64_MAX / QuantityToBuy) {
+        UE_LOG(LogTemp, Error, TEXT("Amount exceeds the allowable max cost"));
+        return false;
+    }
+
+    if (FMath::Abs(MoneyToBuyWith->GetValueInUnits()) > (INT64_MAX - PriceToPay))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Purchase exceeds the allowable max transaction result"));
+        return FShopItemInfo();
+    }
+}*/
