@@ -43,8 +43,6 @@ void UNSLEconCurrency::RemoveCurrencyUnit(FGuid CurrencyUnitId)
 
 UNSLEconMoney* UNSLEconCurrency::CreateCurrencyMoney(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
 {
-	int64 TotalUnits = CurrencyUnitsToUnits(CurrUnitAmountList);
-
 	// Create a new UNSLEconMoney object
 	UNSLEconMoney* NewMoney = NewObject<UNSLEconMoney>(this, UNSLEconMoney::StaticClass());
 	NewMoney->Initialize(this);

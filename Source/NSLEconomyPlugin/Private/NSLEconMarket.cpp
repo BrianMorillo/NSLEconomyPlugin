@@ -9,7 +9,7 @@ UNSLEconMarket::UNSLEconMarket()
 {
     // Registries start out empty
 }
-
+/*
 UNSLEconItem* UNSLEconMarket::GetItemFromMarket(const FGuid& ItemId) const
 {
     if (ItemRegistry.Contains(ItemId))
@@ -44,3 +44,4 @@ UNSLEconShop* UNSLEconMarket::GetShopFromMarket(const FGuid& ShopId) const
     }
     return nullptr;
 }
+*/

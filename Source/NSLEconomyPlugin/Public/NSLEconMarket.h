@@ -18,12 +18,12 @@ class NSLECONOMYPLUGIN_API UNSLEconMarket : public UObject
 
 private:
     // Registry of all items
-    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    TMap<FGuid, UNSLEconItem*> ItemRegistry;
+    //UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    //TMap<FGuid, UNSLEconItem*> ItemRegistry;
 
-    // Registry of all shops
-    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    TMap<FGuid, UNSLEconShop*> ShopRegistry;
+    //// Registry of all shops
+    //UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    //TMap<FGuid, UNSLEconShop*> ShopRegistry;
 
 public:
     // Constructor
@@ -37,7 +37,7 @@ public:
     //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     //void RemoveItemFromMarket(const FGuid& ItemId);
 
-    // Function to get an item from the market by its FGuid
+   /* // Function to get an item from the market by its FGuid
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     UNSLEconItem* GetItemFromMarket(const FGuid& ItemId) const;
 
@@ -51,6 +51,6 @@ public:
 
     // Function to get a shop from the market by its FGuid
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconShop* GetShopFromMarket(const FGuid& ShopId) const;
+    UNSLEconShop* GetShopFromMarket(const FGuid& ShopId) const;*/
 };
 

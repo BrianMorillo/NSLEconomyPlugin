@@ -22,7 +22,7 @@ void UNSLEconMoney::Initialize(UNSLEconCurrency* InCurrency)
     Units = 0;
 }
 
-FString UNSLEconMoney::ToFormattedString()
+const FString UNSLEconMoney::ToFormattedString() const
 {
     return Currency.IsValid() ? 
         Currency->UnitsToFormattedCurrency(Units) : FString::Printf(TEXT("%lld"), Units);
@@ -102,5 +102,19 @@ bool UNSLEconMoney::IsOperationValid(const UNSLEconMoney* Other)
 int64 UNSLEconMoney::GetValueInUnits() const
 {
     return Units;
+}
+
+const UNSLEconCurrency* UNSLEconMoney::GetCurrency()
+{
+    return Currency.Get();
+}
+
+UNSLEconMoney* UNSLEconMoney::ScaledBy(UNSLEconMoney* MoneyToScale, float PercentageToScaleBy)
+{
+    UNSLEconMoney* ScaledMoney = NewObject<UNSLEconMoney>();
+    ScaledMoney->Initialize(MoneyToScale->Currency.Get());
+    int IPercentageToScaleBy = (PercentageToScaleBy * 100);
+    ScaledMoney->Units = (MoneyToScale->Units * IPercentageToScaleBy) / 100;
+    return ScaledMoney;
 }
 

@@ -31,11 +31,8 @@ private:
 public:
     UNSLEconMoney();
 
-    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    //    void Initialize(int64 InUnits, UNSLEconCurrency* InCurrency);
-
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        FString ToFormattedString();
+        const FString ToFormattedString() const;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         UNSLEconMoney* Add(const UNSLEconMoney* Other);
@@ -57,5 +54,10 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         int64 GetValueInUnits() const;
-       
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+        const UNSLEconCurrency* GetCurrency();
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+        static UNSLEconMoney* ScaledBy(UNSLEconMoney* MoneyToScale, float PercentageToScaleBy);
 };

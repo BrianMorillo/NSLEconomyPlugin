@@ -4,132 +4,76 @@
 #include "NSLEconContainerItem.h"
 #include "NSLEconItem.h"
 #include "NSLEconTypes.h"
+#include "NSLEconItemEntry.h"
 
 UNSLEconContainerItem::UNSLEconContainerItem()
-    : ItemTable(nullptr)
 {
 }
 
-// Constructor implementation
-void UNSLEconContainerItem::Initialize()
+void UNSLEconContainerItem::AddItemEntry(UNSLEconItemEntry* ItemEntry)
 {
-    if (ItemTable)
+    if (!ItemEntry || !(ItemEntry->ItemPtr))
     {
-        ItemTable->ConditionalBeginDestroy(); // or simply set to nullptr if needed
+        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconItemEntry argument"));
     }
 
-    ItemTable = NewObject<UDataTable>(this, UDataTable::StaticClass());
-    ItemTable->RowStruct = FNSLEconContainerEntry::StaticStruct();
-}
-
-// Add an item to the container
-void UNSLEconContainerItem::AddItem(int32 AmountOfItems, UNSLEconItem* NewItem)
-{
-    InitializationCheck();
-
-    if (GetItem(NewItem->GetId())) {
-        UE_LOG(LogTemp, Error, TEXT("Item already added."));
+    FGuid ItemEntryId = ItemEntry->ItemPtr->GetId();
+    if (FindEntry(ItemEntryId))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Item already included"));
         return;
     }
 
-    FNSLEconContainerEntry Row;
-    Row.Quantity = FMath::Max(0, AmountOfItems);
-    Row.ItemPtr = NewItem;
-    ItemTable->AddRow(FName(*NewItem->GetId().ToString()), Row);
+    ItemEntriesMap.Add(ItemEntryId, ItemEntry);
+    OrderedEntriesIdList.Add(ItemEntryId);
+}
+void UNSLEconContainerItem::RemoveItemEntry(const FGuid& ItemId)
+{
+    ItemEntriesMap.Remove(FindEntry(ItemId)->ItemPtr->GetId());
+    OrderedEntriesIdList.Remove(ItemId);
 }
 
-// Remove an item from the container by its ID
-void UNSLEconContainerItem::RemoveItem(const FGuid& ItemId)
+void UNSLEconContainerItem::SetItemQuantityTo(const FGuid& ItemId, int32 NewQuantity)
 {
-    InitializationCheck();
+    UNSLEconItemEntry* Entry = *ItemEntriesMap.Find(ItemId);
 
-    if (!GetItem(ItemId)) {
-        UE_LOG(LogTemp, Error, TEXT("Item not found"));
+    if (!Entry) {
+        UE_LOG(LogTemp, Error, TEXT("Item not found."));
         return;
     }
 
-    // Create a new DataTable
-    UDataTable* NewItemTable = NewObject<UDataTable>(ItemTable->GetOuter(), UDataTable::StaticClass());
+    Entry->SetQuantity(NewQuantity);
+}
 
-    // Copy the original DataTable's RowStruct
-    NewItemTable->RowStruct = ItemTable->RowStruct;
+UNSLEconItemEntry* UNSLEconContainerItem::GetEntry(const FGuid& ItemId)
+{
+    UNSLEconItemEntry* EntryPtr = FindEntry(ItemId);
+    if (!EntryPtr) {
+        UE_LOG(LogTemp, Error, TEXT("Item not found."));
+        return nullptr;
+    }
 
-    // Iterate through the existing rows
-    for (const auto& RowPair : ItemTable->GetRowMap())
+    return EntryPtr;
+}
+
+UNSLEconItemEntry* UNSLEconContainerItem::FindEntry(const FGuid& ItemId)
+{
+    UNSLEconItemEntry** EntryPtr = ItemEntriesMap.Find(ItemId);
+    return EntryPtr ? *EntryPtr : nullptr;
+}
+
+
+TArray<UNSLEconItemEntry*> UNSLEconContainerItem::GetEntries()
+{
+    TArray<UNSLEconItemEntry*> ResultList;
+    for (const auto& EntryId : OrderedEntriesIdList)
     {
-        const FName& RowName = RowPair.Key;
-
-        // Skip the row to remove
-        if (RowName != *ItemId.ToString())
+        const UNSLEconItemEntry* Entry = FindEntry(EntryId);
+        if (Entry)
         {
-            FTableRowBase* RowData = reinterpret_cast<FTableRowBase*>(RowPair.Value);
-
-            // Add the row to the new DataTable
-            NewItemTable->AddRow(RowName, *RowData);
+            ResultList.Add(const_cast<UNSLEconItemEntry*>(Entry)); // Cast to non-const to fit the API
         }
     }
 
-    ItemTable = NewItemTable;
-}
-
-// Get an item from the container by its ID
-const UNSLEconItem* UNSLEconContainerItem::GetItem(const FGuid& ItemId) const
-{
-    InitializationCheck();
-
-    FNSLEconContainerEntry* Row = ItemTable->FindRow<FNSLEconContainerEntry>
-        (FName(*ItemId.ToString()), TEXT("Getting an item"));
-
-    return Row ? Row->ItemPtr : nullptr;
-}
-
-void UNSLEconContainerItem::SetItemQuantityTo(int32 NewQuantity, const FGuid& ItemId)
-{
-    InitializationCheck();
-
-    FNSLEconContainerEntry* Row = ItemTable->FindRow<FNSLEconContainerEntry>
-        (FName(*ItemId.ToString()), TEXT("Changing an item quantity"));
-
-    if (Row)
-    {
-        Row->Quantity = FMath::Max(0, NewQuantity);
-    }
-}
-
-const FNSLEconContainerEntry UNSLEconContainerItem::GetEntry(const FGuid& ItemId) const 
-{
-    FNSLEconContainerEntry* Row = ItemTable->FindRow<FNSLEconContainerEntry>
-        (FName(*ItemId.ToString()), TEXT("Getting an entry"));
-
-    return *Row;
-}
-
-bool UNSLEconContainerItem::IsInitialized() const
-{
-    return ItemTable != nullptr;
-}
-
-void UNSLEconContainerItem::InitializationCheck() const
-{
-    if (!IsInitialized()) {
-        UE_LOG(LogTemp, Fatal, TEXT("UNSLEconContainerItem not initialized. Do Initialize()"));
-        return;
-    }
-}
-
-const TMap<FString, FGuid> UNSLEconContainerItem::GetItemsId() const
-{
-    TMap<FString, FGuid> itemsNamesAndIds;
-
-    // Iterate through all rows
-    for (auto& Row : ItemTable->GetRowMap())
-    {
-        FNSLEconContainerEntry* Data = (FNSLEconContainerEntry*)Row.Value;
-        if (Data)
-        {
-            itemsNamesAndIds.Add(Data->ItemPtr->Name, Data->ItemPtr->GetId());
-        }
-    }
-
-    return itemsNamesAndIds;
+    return ResultList; // Return by value (copy)
 }

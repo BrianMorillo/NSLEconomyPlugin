@@ -7,7 +7,8 @@
 #include "NSLEconShop.generated.h"
 
 class UNSLEconContainerItem;
-struct FNSLEconContainerEntry;
+class UNSLEconShopItemEntry;
+struct FShopItemInfo;
 
 /**
  * 
@@ -23,36 +24,33 @@ private:
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
     UNSLEconContainerItem* Inventory;
 
-    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    TMap<FGuid, float> ItemMarkupMap;
-
 public:
     // Constructor
     UNSLEconShop();
 
-    // Name of the shop
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
-    FString Name;
+    //// Name of the shop
+    //UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
+    //FString Name;
 
     // Function to add an item to the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddItemToInventory(int32 AmountOfItems, float PriceMarkupPercentage, UNSLEconItem* NewItem);
+    void AddItem(UNSLEconShopItemEntry* ShopItemEntry);
 
     // Function to remove an item from the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void RemoveItemFromInventory(const FGuid& ItemId);
+    void RemoveItem(const FGuid& ItemId);
 
     // Function to buy an item (removes item from inventory)
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const UNSLEconItem* BuyItem(const FGuid& ItemId, UNSLEconMoney* MoneyToBuyWith);
-
-    // Get inventory
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const TMap<FString, FGuid> GetItemsId() const;
+    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    //const UNSLEconItem* BuyItem(const FGuid& ItemId, UNSLEconMoney* MoneyToBuyWith);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const FNSLEconContainerEntry GetItemDetails(const FGuid& ItemId) const;
+    const UNSLEconShopItemEntry* GetItem(const FGuid& ItemId);
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    TArray<FShopItemInfo> GetItems();
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void AdjustItemMarkup(const FGuid& ItemId, float PriceMarkupPercentage);
+
 };
