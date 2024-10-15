@@ -8,6 +8,7 @@
 
 class UNSLEconContainerItem;
 class UNSLEconShopItemEntry;
+class UNSLEconMarket;
 struct FShopItemInfo;
 
 /**
@@ -28,9 +29,13 @@ public:
     // Constructor
     UNSLEconShop();
 
-    //// Name of the shop
-    //UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
-    //FString Name;
+    // Name of the shop
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
+    FString Name;
+
+    // Market in which the shop participates in
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
+    UNSLEconMarket* Market;
 
     // Function to add an item to the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")

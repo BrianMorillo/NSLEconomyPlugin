@@ -27,7 +27,7 @@ private:
 		FString CurrencyName;
 
 	UPROPERTY()
-	TMap<FGuid, UNSLEconCurrencyUnit*> CurrencyUnitMap;
+		TMap<FGuid, UNSLEconCurrencyUnit*> CurrencyUnitMap;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "NSLEconomy")
 		FUnitsToFormattedCurrencyDelegate UnitsToFormattedCurrencyDel;
@@ -37,7 +37,7 @@ public:
 
 	// Initialization function
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-	void Initialize(const FString& InCurrencyName);
+		void Initialize(const FString& InCurrencyName);
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
 		FString GetCurrencyName() const;

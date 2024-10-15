@@ -37,40 +37,6 @@ struct NSLECONOMYPLUGIN_API FNSLEconCurrencyUnitAmount
         : Amount(InAmount), CurrencyUnitId(InCurrencyUnitId)
     {}
 };
-/*
-USTRUCT(BlueprintType)
-struct FNSLEconContainerEntry : public FTableRowBase
-{
-    GENERATED_USTRUCT_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NSLEconomy")
-    int32 Quantity;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NSLEconomy")
-    const UNSLEconItem* ItemPtr;
-
-    // Constructor
-
-    // Example method to set the pointer
-    void SetItem(const UNSLEconItem* NewItem)
-    {
-        ItemPtr = NewItem; // This will change the pointer to point to NewItem
-    }
-
-    FNSLEconContainerEntry()
-        : Quantity(0), ItemPtr(nullptr)
-    {}
-
-    FNSLEconContainerEntry(int32 InQuantity)
-        : Quantity(InQuantity), ItemPtr(nullptr)
-    {}
-
-    //FNSLEconContainerEntry(int32 InQuantity, UNSLEconItem* InItem)
-    //    : Quantity(Quantity), Item(InItem)
-    //{}
-};*/
-
 
 USTRUCT(BlueprintType)
 struct FShopItemInfo

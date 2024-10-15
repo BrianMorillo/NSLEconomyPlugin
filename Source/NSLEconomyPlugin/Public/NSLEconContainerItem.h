@@ -47,31 +47,4 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     TArray<UNSLEconItemEntry*> GetEntries();
-
-
-
-    /*
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void Initialize();
-
-
-    // Function to get an item by its FGuid
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const UNSLEconItem* GetItem(const FGuid& ItemId) const;
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void SetItemQuantityTo(int32 NewQuantity, const FGuid& ItemId);
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    bool IsInitialized() const;
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void InitializationCheck() const;
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const FNSLEconContainerEntry GetEntry(const FGuid& ItemId) const;
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const TMap<FString, FGuid> GetItemsId() const;
-    */
 };

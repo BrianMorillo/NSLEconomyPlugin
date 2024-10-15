@@ -6,7 +6,10 @@
 #include "UObject/NoExportTypes.h"
 #include "NSLEconMarket.generated.h"
 
-class UNSLEconShop;
+class UNSLEconMarketEntry;
+
+DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(const UNSLEconMarketEntry*, FMarketItemUpdateDelegate, const UNSLEconMarketEntry*, MarketEntry);
+
 /**
  * 
  */
@@ -17,40 +20,41 @@ class NSLECONOMYPLUGIN_API UNSLEconMarket : public UObject
 	
 
 private:
-    // Registry of all items
-    //UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    //TMap<FGuid, UNSLEconItem*> ItemRegistry;
+    // Registry of all item entries
+    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    TMap<FGuid, UNSLEconMarketEntry*> ItemRegistry;
 
-    //// Registry of all shops
-    //UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    //TMap<FGuid, UNSLEconShop*> ShopRegistry;
+    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    FMarketItemUpdateDelegate MarketItemUpdateDel;
+
+    TQueue<const UNSLEconMarketEntry*> ItemsChangeQueue;
+
+    // Function to execute the delegate
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void RegisterItemChange(FGuid ItemId, int32 QuantityChange);
 
 public:
     // Constructor
     UNSLEconMarket();
 
-    //// Function to add an item to the market
-    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    //void AddItemToMarket(UNSLEconItem* NewItem);
+    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    bool AdjustMarketOnItemUpdate = true;
 
-    //// Function to remove an item from the market by its FGuid
-    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    //void RemoveItemFromMarket(const FGuid& ItemId);
-
-   /* // Function to get an item from the market by its FGuid
+    // Function to add an item to the market
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconItem* GetItemFromMarket(const FGuid& ItemId) const;
+    void AddItemToMarket(UNSLEconMarketEntry* NewMarketEntry);
 
-    // Function to add a new shop to the market
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddShopToMarket(UNSLEconShop* NewShop);
+    UFUNCTION(BlueprintCallable)
+    void ItemBuy(FGuid ItemId, int32 QuantityBought);
 
-    // Function to remove a shop from the market by its FGuid
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void RemoveShopFromMarket(const FGuid& ShopId);
+    UFUNCTION(BlueprintCallable)
+    void ItemSell(FGuid ItemId, int32 QuantitySold);
 
-    // Function to get a shop from the market by its FGuid
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconShop* GetShopFromMarket(const FGuid& ShopId) const;*/
+    UFUNCTION(BlueprintCallable)
+    void BindMarketItemUpdateDelegate(const FMarketItemUpdateDelegate& Delegate);
+
+    UFUNCTION(BlueprintCallable)
+    void UpdateMarket();
+
 };
 
