@@ -73,3 +73,10 @@ public:
         : Quantity(InQuantity), ItemPtr(InItem), ShopPrice(Price)
     {}
 };
+
+UENUM(BlueprintType)
+enum class ETransactionType : uint8
+{
+    Buy UMETA(DisplayName = "Buy"),
+    Sell UMETA(DisplayName = "Sell")
+};

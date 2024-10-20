@@ -3,8 +3,9 @@
 
 #include "NSLEconMarket.h"
 #include "NSLEconItem.h"
+#include "NSLEconTransaction.h"
 #include "NSLEconMarketEntry.h"
-#include "Containers/Queue.h"
+//#include "Containers/Queue.h"
 
 UNSLEconMarket::UNSLEconMarket()
 {
@@ -33,19 +34,9 @@ void UNSLEconMarket::AddItemToMarket(UNSLEconMarketEntry* NewMarketEntry)
     ItemRegistry.Add(NewMarketEntry->ItemPtr->GetId(), NewMarketEntry);
 }
 
-void UNSLEconMarket::ItemBuy(FGuid ItemId, int32 QuantityBought)
+void UNSLEconMarket::RegisterTransaction(const UNSLEconTransaction* Transaction)
 {
-    RegisterItemChange(ItemId, QuantityBought);
-}
-
-void UNSLEconMarket::ItemSell(FGuid ItemId, int32 QuantitySold)
-{
-    RegisterItemChange(ItemId, -QuantitySold);
-}
-
-void UNSLEconMarket::RegisterItemChange(FGuid ItemId, int32 QuantityChange)
-{
-    UNSLEconMarketEntry* Entry = *ItemRegistry.Find(ItemId);
+    const UNSLEconMarketEntry* Entry = *ItemRegistry.Find(Transaction->ItemId);
     if (!Entry)
     {
         UE_LOG(LogTemp, Error, TEXT("Item not found in market registry"));
@@ -57,28 +48,39 @@ void UNSLEconMarket::RegisterItemChange(FGuid ItemId, int32 QuantityChange)
         UE_LOG(LogTemp, Error, TEXT("No delegate bound to market item update"));
         return;
     }
-    
-    ItemsChangeQueue.Enqueue(Entry);
 
-    if (AdjustMarketOnItemUpdate) 
+    ItemsChangeQueue.Enqueue(Transaction);
+
+    if (AdjustMarketOnItemUpdate)
     {
         UpdateMarket();
     }
 
 }
 
-void UNSLEconMarket::UpdateMarket()
-{
-    const UNSLEconMarketEntry* Entry;
-    while (ItemsChangeQueue.Dequeue(Entry))
-    {
-        MarketItemUpdateDel.Execute(Entry);
-    }
-}
-
-
 void UNSLEconMarket::BindMarketItemUpdateDelegate(const FMarketItemUpdateDelegate& Delegate)
 {
     MarketItemUpdateDel = Delegate;
 }
+
+void UNSLEconMarket::UpdateMarket()
+{
+    const UNSLEconTransaction* Transaction;
+    while (ItemsChangeQueue.Dequeue(Transaction))
+    {
+        MarketItemUpdateDel.Execute(*ItemRegistry.Find(Transaction->ItemId), Transaction);
+    }
+}
+
+const UNSLEconMarketEntry* UNSLEconMarket::GetEntry(const FGuid& ItemId)
+{
+    UNSLEconMarketEntry* EntryPtr = *ItemRegistry.Find(ItemId);
+    if (!EntryPtr) {
+        UE_LOG(LogTemp, Error, TEXT("Item not found."));
+        return nullptr;
+    }
+
+    return EntryPtr;
+}
+
 

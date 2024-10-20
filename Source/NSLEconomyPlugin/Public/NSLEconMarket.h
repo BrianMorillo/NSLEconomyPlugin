@@ -7,8 +7,9 @@
 #include "NSLEconMarket.generated.h"
 
 class UNSLEconMarketEntry;
+class UNSLEconTransaction;
 
-DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(const UNSLEconMarketEntry*, FMarketItemUpdateDelegate, const UNSLEconMarketEntry*, MarketEntry);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FMarketItemUpdateDelegate, UNSLEconMarketEntry*, MarketItemEntry, const UNSLEconTransaction*, Transaction);
 
 /**
  * 
@@ -27,11 +28,7 @@ private:
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
     FMarketItemUpdateDelegate MarketItemUpdateDel;
 
-    TQueue<const UNSLEconMarketEntry*> ItemsChangeQueue;
-
-    // Function to execute the delegate
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void RegisterItemChange(FGuid ItemId, int32 QuantityChange);
+    TQueue<const UNSLEconTransaction*> ItemsChangeQueue;
 
 public:
     // Constructor
@@ -44,17 +41,18 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void AddItemToMarket(UNSLEconMarketEntry* NewMarketEntry);
 
-    UFUNCTION(BlueprintCallable)
-    void ItemBuy(FGuid ItemId, int32 QuantityBought);
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void UpdateMarket();
 
-    UFUNCTION(BlueprintCallable)
-    void ItemSell(FGuid ItemId, int32 QuantitySold);
+    // Function to execute the delegate
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void RegisterTransaction(const UNSLEconTransaction* Transaction);
 
     UFUNCTION(BlueprintCallable)
     void BindMarketItemUpdateDelegate(const FMarketItemUpdateDelegate& Delegate);
 
-    UFUNCTION(BlueprintCallable)
-    void UpdateMarket();
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    const UNSLEconMarketEntry* GetEntry(const FGuid& ItemId);
 
 };
 

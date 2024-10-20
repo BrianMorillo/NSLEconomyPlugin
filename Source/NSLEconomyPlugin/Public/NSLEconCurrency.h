@@ -7,10 +7,15 @@
 #include "NSLEconCurrency.generated.h"
 
 class UNSLEconCurrencyUnit;
-struct FNSLEconCurrencyUnitAmount;
 class UNSLEconMoney;
+struct FNSLEconCurrencyUnitAmount;
+
 
 DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FString, FUnitsToFormattedCurrencyDelegate, int64, AmountToFormat);
+
+DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(UNSLEconMoney*, FStrToMoneyDelegate, FString, StrToMoney);
+//DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(int64, FCurrencyToUnitsDelegate, int32, CurrencyUnits);
+
 /**
  * 
  */
@@ -31,6 +36,9 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "NSLEconomy")
 		FUnitsToFormattedCurrencyDelegate UnitsToFormattedCurrencyDel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "NSLEconomy")
+		FStrToMoneyDelegate StrToMoneyDel;
 
 public:
 	UNSLEconCurrency();
@@ -64,4 +72,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
 		int64 CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
+
+	// Function to execute the delegate
+	UFUNCTION(BlueprintCallable)
+	UNSLEconMoney* FormattedCurrencyToMoney(FString FormattedCurrency) const;
+
+	// Function to bind the delegate
+	UFUNCTION(BlueprintCallable)
+	void BindFormattedCurrencyToMoneyDelegate(const FStrToMoneyDelegate& Delegate);
 };

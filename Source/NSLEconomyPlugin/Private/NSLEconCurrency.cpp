@@ -86,12 +86,28 @@ FString UNSLEconCurrency::UnitsToFormattedCurrency(int64 AmountToFormat) const
 	{
 		return UnitsToFormattedCurrencyDel.Execute(AmountToFormat);
 	}
-	return "";
+
+	return FString::Printf(TEXT("%lld"), AmountToFormat);
 }
 
 void UNSLEconCurrency::BindUnitsToFormattedCurrencyDelegate(const FUnitsToFormattedCurrencyDelegate& Delegate)
 {
 	UnitsToFormattedCurrencyDel = Delegate;
+}
+
+UNSLEconMoney* UNSLEconCurrency::FormattedCurrencyToMoney(FString FormattedCurrency) const
+{
+	if (StrToMoneyDel.IsBound())
+	{
+		return StrToMoneyDel.Execute(FormattedCurrency);
+	}
+	UE_LOG(LogTemp, Error, TEXT("No delegate bound"));
+	return nullptr;
+}
+
+void UNSLEconCurrency::BindFormattedCurrencyToMoneyDelegate(const FStrToMoneyDelegate& Delegate)
+{
+	StrToMoneyDel = Delegate;
 }
 
 

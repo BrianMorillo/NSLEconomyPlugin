@@ -9,6 +9,7 @@
 class UNSLEconContainerItem;
 class UNSLEconShopItemEntry;
 class UNSLEconMarket;
+class UNSLEconProfile;
 struct FShopItemInfo;
 
 /**
@@ -18,16 +19,13 @@ UCLASS(Blueprintable)
 class NSLECONOMYPLUGIN_API UNSLEconShop : public UObject
 {
 	GENERATED_BODY()
-	
-
-private:
-    // Shop inventory
-    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
-    UNSLEconContainerItem* Inventory;
 
 public:
     // Constructor
     UNSLEconShop();
+
+    UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+    UNSLEconProfile* ShopProfile;
 
     // Name of the shop
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
@@ -45,10 +43,6 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void RemoveItemEntry(const FGuid& ItemId);
 
-    // Function to buy an item (removes item from inventory)
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const FShopItemInfo BuyItem(const FGuid& ItemId, int32 QuantityToBuy, UNSLEconMoney* MoneyToBuyWith);
-
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     const FShopItemInfo GetItemInfo(const FGuid& ItemId);
 
@@ -57,5 +51,8 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void AdjustItemMarkup(const FGuid& ItemId, float PriceMarkupPercentage);
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    void BuyItem(const FGuid& ItemId, int32 QuantityToPurchase, UNSLEconProfile* Buyer);
 
 };
