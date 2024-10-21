@@ -46,13 +46,13 @@ void UNSLEconPurchaseTransaction::Execute_Implementation()
         return;
     }
 
-    if (Buyer->Money->GetCurrency() != Seller->Money->GetCurrency())
+    if (Buyer->GetMoney()->GetCurrency() != Seller->GetMoney()->GetCurrency())
     {
         UE_LOG(LogTemp, Error, TEXT("Mismatching currencies"));
         return;
     }
 
-    UNSLEconItemEntry* SellerItemEntry = Cast<UNSLEconItemEntry>(Seller->Items->GetEntry(ItemId));
+    UNSLEconItemEntry* SellerItemEntry = Cast<UNSLEconItemEntry>(Seller->GetEntry(ItemId));
     if (!SellerItemEntry || !SellerItemEntry->ItemPtr)
     {
         UE_LOG(LogTemp, Error, TEXT("No entry for item found in seller profile"));
@@ -75,13 +75,13 @@ void UNSLEconPurchaseTransaction::Execute_Implementation()
     }
 
     // Attempts money substraction operation and checks if it was successful
-    if (Buyer->Money->Substract(TotalMoneyToPay) == nullptr)
+    if (Buyer->GetMoney()->Substract(TotalMoneyToPay) == nullptr)
     {
         return;
     }
 
     // Attempts money addition operation and checks if it was successful
-    if (Seller->Money->Add(TotalMoneyToPay) == nullptr)
+    if (Seller->GetMoney()->Add(TotalMoneyToPay) == nullptr)
     {
         return;
     }
@@ -92,5 +92,5 @@ void UNSLEconPurchaseTransaction::Execute_Implementation()
     // Handle buyer transaction side
     UNSLEconItemEntry* BoughtItemEntry = DuplicateObject(SellerItemEntry, GetTransientPackage());
     BoughtItemEntry->SetQuantity(QuantityToPurchase);
-    Buyer->Items->AddItemEntry(BoughtItemEntry);
+    Buyer->AddItemEntry(BoughtItemEntry);
 }

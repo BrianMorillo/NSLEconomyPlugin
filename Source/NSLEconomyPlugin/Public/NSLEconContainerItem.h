@@ -29,11 +29,12 @@ protected:
     UNSLEconItemEntry* FindEntry(const FGuid& ItemId);
 
 public:
-    UNSLEconContainerItem();
+    //UNSLEconContainerItem();
+    UNSLEconContainerItem(const FObjectInitializer& ObjectInitializer);
 
     // Function to add an item
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddItemEntry(UNSLEconItemEntry* ItemEntry);
+    virtual void AddItemEntry(UNSLEconItemEntry* ItemEntry);
 
     // Function to remove an item by its FGuid
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")

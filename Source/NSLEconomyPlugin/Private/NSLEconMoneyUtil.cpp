@@ -3,6 +3,7 @@
 
 #include "NSLEconMoneyUtil.h"
 #include "NSLEconMoney.h"
+#include "NSLEconCurrency.h"
 
 bool UNSLEconMoneyUtil::IsScalingAllowed(const UNSLEconMoney* MoneyToScale, float PercentageToScaleBy)
 {
@@ -44,5 +45,31 @@ bool UNSLEconMoneyUtil::IsUnitsSubstractionAllowed(int64 AmountA, int64 AmountB)
     {
         return false;
     }
+    return true;
+}
+
+bool UNSLEconMoneyUtil::IsOperable(const UNSLEconMoney* Money)
+{
+    if (!Money || !Money->GetCurrency())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool UNSLEconMoneyUtil::IsOperationValid(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB)
+{
+    if (!IsOperable(MoneyA) || !IsOperable(MoneyA))
+    {
+        return false;
+    }
+
+    // checks if their currencies are not the same
+    if (MoneyA->GetCurrency()->GetCurrencyId() != MoneyB->GetCurrency()->GetCurrencyId())
+    {
+        return false;
+    }
+
     return true;
 }

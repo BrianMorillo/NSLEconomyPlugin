@@ -4,23 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "NSLEconContainerItem.h"
 #include "NSLEconProfile.generated.h"
 class UNSLEconMoney;
-class UNSLEconContainerItem;
 /**
  * 
  */
 UCLASS(Blueprintable)
-class NSLECONOMYPLUGIN_API UNSLEconProfile : public UObject
+class NSLECONOMYPLUGIN_API UNSLEconProfile : public UNSLEconContainerItem
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
+	UNSLEconMoney* Money;
 public:
 	UNSLEconProfile(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
-	UNSLEconMoney* Money;
+	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+	void SetMoney(const UNSLEconMoney* NewValue);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
-	UNSLEconContainerItem* Items;
+	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+	UNSLEconMoney* GetMoney();
+
+	virtual void AddItemEntry(UNSLEconItemEntry* ItemEntry) override;
 
 };

@@ -11,6 +11,7 @@ UNSLEconMoney::UNSLEconMoney()
 {
 }
 
+
 void UNSLEconMoney::Initialize(UNSLEconCurrency* InCurrency) 
 {
     if (Currency.IsValid())
@@ -29,11 +30,22 @@ const FString UNSLEconMoney::ToFormattedString() const
         Currency->UnitsToFormattedCurrency(Units) : FString::Printf(TEXT("%lld"), Units);
 }
 
+UNSLEconMoney* UNSLEconMoney::SetTo(const UNSLEconMoney* Other)
+{
+    if (!IsCurrencyValidated(Other))
+    {
+        return nullptr;
+    }
+
+    Units = Other->Units;
+    return this;
+}
+
+
 UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
 {
-    if (!IsOperationValid(Other))
+    if (!IsCurrencyValidated(Other))
     {
-        UE_LOG(LogTemp, Error, TEXT("Cannot add different currency types!"));
         return nullptr;
     }
 
@@ -48,9 +60,8 @@ UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
 
 UNSLEconMoney* UNSLEconMoney::Substract(const UNSLEconMoney* Other)
 {
-    if (!IsOperationValid(Other))
+    if (!IsCurrencyValidated(Other))
     {
-        UE_LOG(LogTemp, Error, TEXT("Cannot substract different currency types!"));
         return nullptr;
     }
 
@@ -114,17 +125,21 @@ int64 UNSLEconMoney::CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> 
     return CalculatedUnits;
 }
 
-bool UNSLEconMoney::IsOperationValid(const UNSLEconMoney* Other)
+bool UNSLEconMoney::IsCurrencyValidated(const UNSLEconMoney* Other)
 {
-    // checks if one has currency but the other does not
-    if (Currency.IsValid() != Other->Currency.IsValid())
+    if (!Other || !Other->Currency.IsValid())
     {
+        UE_LOG(LogTemp, Error, TEXT("Invalid money"));
         return false;
     }
 
-    // checks if their currencies are not the same
-    if (Currency.IsValid() && GetCurrencyId() != Other->GetCurrencyId())
+    if (!Currency.IsValid())
     {
+        Currency = Other->Currency;
+    }
+    else if (GetCurrencyId() != Other->GetCurrencyId())
+    {
+        UE_LOG(LogTemp, Error, TEXT("Currency Mismatch"));
         return false;
     }
 
@@ -136,12 +151,12 @@ int64 UNSLEconMoney::GetValueInUnits() const
     return Units;
 }
 
-const UNSLEconCurrency* UNSLEconMoney::GetCurrency()
+const UNSLEconCurrency* UNSLEconMoney::GetCurrency() const
 {
     return Currency.Get();
 }
 
-UNSLEconMoney* UNSLEconMoney::ScaledBy(UNSLEconMoney* MoneyToScale, float PercentageToScaleBy)
+UNSLEconMoney* UNSLEconMoney::ScaledBy(const UNSLEconMoney* MoneyToScale, float PercentageToScaleBy)
 {
     if (!UNSLEconMoneyUtil::IsScalingAllowed(MoneyToScale, PercentageToScaleBy)) {
         UE_LOG(LogTemp, Error, TEXT("Scaling operation exceeds the allowable max result"));

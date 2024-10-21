@@ -19,7 +19,7 @@ void UNSLEconMarket::AddItemToMarket(UNSLEconMarketEntry* NewMarketEntry)
         return;
     }
 
-    if (!NewMarketEntry->ItemPtr || !NewMarketEntry->ItemPtr->Value) 
+    if (!NewMarketEntry->ItemPtr || !NewMarketEntry->ItemPtr->GetValue()) 
     {
         UE_LOG(LogTemp, Error, TEXT("UNSLEconItem associated with entry is invalid"));
         return;

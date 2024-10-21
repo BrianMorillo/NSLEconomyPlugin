@@ -26,13 +26,16 @@ private:
         int64 CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        bool IsOperationValid(const UNSLEconMoney* Other);
+        bool IsCurrencyValidated(const UNSLEconMoney* Other);
 
 public:
     UNSLEconMoney();
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         const FString ToFormattedString() const;
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+        UNSLEconMoney* SetTo(const UNSLEconMoney* Other);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         UNSLEconMoney* Add(const UNSLEconMoney* Other);
@@ -56,8 +59,8 @@ public:
         int64 GetValueInUnits() const;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        const UNSLEconCurrency* GetCurrency();
+        const UNSLEconCurrency* GetCurrency() const;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        static UNSLEconMoney* ScaledBy(UNSLEconMoney* MoneyToScale, float PercentageToScaleBy);
+        static UNSLEconMoney* ScaledBy(const UNSLEconMoney* MoneyToScale, float PercentageToScaleBy);
 };

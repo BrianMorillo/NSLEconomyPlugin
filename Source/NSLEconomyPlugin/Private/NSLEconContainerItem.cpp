@@ -4,17 +4,30 @@
 #include "NSLEconContainerItem.h"
 #include "NSLEconItem.h"
 #include "NSLEconTypes.h"
+#include "NSLEconMoney.h"
 #include "NSLEconItemEntry.h"
+#include "NSLEconMoneyUtil.h"
 
-UNSLEconContainerItem::UNSLEconContainerItem()
+UNSLEconContainerItem::UNSLEconContainerItem(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
 }
+//UNSLEconContainerItem::UNSLEconContainerItem()
+//{
+//}
 
 void UNSLEconContainerItem::AddItemEntry(UNSLEconItemEntry* ItemEntry)
 {
+    if (!UNSLEconMoneyUtil::IsOperationValid(GetValue(), ItemEntry->ItemPtr->GetValue()))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Mismatching currencies"));
+        return;
+    }
+
     if (!ItemEntry || !(ItemEntry->ItemPtr))
     {
         UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconItemEntry argument"));
+        return;
     }
 
     FGuid ItemEntryId = ItemEntry->ItemPtr->GetId();
@@ -29,20 +42,23 @@ void UNSLEconContainerItem::AddItemEntry(UNSLEconItemEntry* ItemEntry)
 }
 void UNSLEconContainerItem::RemoveItemEntry(const FGuid& ItemId)
 {
-    ItemEntriesMap.Remove(FindEntry(ItemId)->ItemPtr->GetId());
-    OrderedEntriesIdList.Remove(ItemId);
+    if (UNSLEconItemEntry* Entry = FindEntry(ItemId))
+    {
+        ItemEntriesMap.Remove(Entry->ItemPtr->GetId());
+        OrderedEntriesIdList.Remove(ItemId);
+    }
 }
 
 void UNSLEconContainerItem::SetItemQuantityTo(const FGuid& ItemId, int32 NewQuantity)
 {
-    UNSLEconItemEntry* Entry = *ItemEntriesMap.Find(ItemId);
+    UNSLEconItemEntry** Entry = ItemEntriesMap.Find(ItemId);
 
     if (!Entry) {
         UE_LOG(LogTemp, Error, TEXT("Item not found."));
         return;
     }
 
-    Entry->SetQuantity(NewQuantity);
+    (*Entry)->SetQuantity(NewQuantity);
 }
 
 UNSLEconItemEntry* UNSLEconContainerItem::GetEntry(const FGuid& ItemId)
