@@ -17,7 +17,7 @@ class NSLECONOMYPLUGIN_API UNSLEconMoney : public UObject
 	GENERATED_BODY()
 private:
     UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "NSLEconomy")
-        TWeakObjectPtr<UNSLEconCurrency> Currency;
+        TWeakObjectPtr<const UNSLEconCurrency> Currency;
 
     UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "NSLEconomy")
         int64 Units;
@@ -26,7 +26,7 @@ private:
         int64 CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        bool IsCurrencyValidated(const UNSLEconMoney* Other);
+        bool IsMatchingCurrency(const UNSLEconMoney* Other);
 
 public:
     UNSLEconMoney();
@@ -44,7 +44,7 @@ public:
         UNSLEconMoney* Substract(const UNSLEconMoney* Other);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        void Initialize(UNSLEconCurrency* InCurrency);
+        void SetCurrency(const UNSLEconCurrency* InCurrency);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         UNSLEconMoney* AddCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);

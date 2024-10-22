@@ -11,8 +11,14 @@ UNSLEconMoney::UNSLEconMoney()
 {
 }
 
-void UNSLEconMoney::Initialize(UNSLEconCurrency* InCurrency) 
+void UNSLEconMoney::SetCurrency(const UNSLEconCurrency* InCurrency)
 {
+    if (!InCurrency)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconCurrency"));
+        return;
+    }
+
     if (Currency.IsValid())
     {
         UE_LOG(LogTemp, Error, TEXT("Currency already initialized"));
@@ -20,7 +26,6 @@ void UNSLEconMoney::Initialize(UNSLEconCurrency* InCurrency)
     }
 
     Currency = InCurrency;
-    Units = 0;
 }
 
 const FString UNSLEconMoney::ToFormattedString() const
@@ -31,7 +36,7 @@ const FString UNSLEconMoney::ToFormattedString() const
 
 UNSLEconMoney* UNSLEconMoney::SetTo(const UNSLEconMoney* Other)
 {
-    if (!IsCurrencyValidated(Other))
+    if (!IsMatchingCurrency(Other))
     {
         return nullptr;
     }
@@ -43,7 +48,7 @@ UNSLEconMoney* UNSLEconMoney::SetTo(const UNSLEconMoney* Other)
 
 UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
 {
-    if (!IsCurrencyValidated(Other))
+    if (!IsMatchingCurrency(Other))
     {
         return nullptr;
     }
@@ -59,7 +64,7 @@ UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
 
 UNSLEconMoney* UNSLEconMoney::Substract(const UNSLEconMoney* Other)
 {
-    if (!IsCurrencyValidated(Other))
+    if (!IsMatchingCurrency(Other))
     {
         return nullptr;
     }
@@ -124,17 +129,17 @@ int64 UNSLEconMoney::CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> 
     return CalculatedUnits;
 }
 
-bool UNSLEconMoney::IsCurrencyValidated(const UNSLEconMoney* Other)
+bool UNSLEconMoney::IsMatchingCurrency(const UNSLEconMoney* Other)
 {
-    if (!Other || !Other->Currency.IsValid())
+    if (!UNSLEconMoneyUtil::IsMoneyValid(Other))
     {
-        UE_LOG(LogTemp, Error, TEXT("Invalid money"));
+        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconMoney"));
         return false;
     }
 
-    if (!Currency.IsValid())
+    if (!UNSLEconMoneyUtil::IsMoneyValid(this))
     {
-        Currency = Other->Currency;
+        SetCurrency(Other->GetCurrency());
     }
     else if (GetCurrencyId() != Other->GetCurrencyId())
     {
@@ -163,7 +168,7 @@ UNSLEconMoney* UNSLEconMoney::ScaledBy(const UNSLEconMoney* MoneyToScale, float 
     }
 
     UNSLEconMoney* ScaledMoney = NewObject<UNSLEconMoney>();
-    ScaledMoney->Initialize(MoneyToScale->Currency.Get());
+    ScaledMoney->SetCurrency(MoneyToScale->Currency.Get());
     int IPercentageToScaleBy = (PercentageToScaleBy * 100);
     ScaledMoney->Units = (MoneyToScale->Units * IPercentageToScaleBy) / 100;
     return ScaledMoney;

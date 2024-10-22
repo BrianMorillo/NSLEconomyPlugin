@@ -12,21 +12,12 @@ UNSLEconContainerItem::UNSLEconContainerItem(const FObjectInitializer& ObjectIni
     : Super(ObjectInitializer)
 {
 }
-//UNSLEconContainerItem::UNSLEconContainerItem()
-//{
-//}
 
 void UNSLEconContainerItem::AddItemEntry(UNSLEconItemEntry* ItemEntry)
 {
-    if (!UNSLEconMoneyUtil::IsOperationValid(GetValue(), ItemEntry->ItemPtr->GetValue()))
+    if (!UNSLEconMoneyUtil::AreValidForOperation(GetValue(), ItemEntry->ItemPtr->GetValue()))
     {
-        UE_LOG(LogTemp, Error, TEXT("Mismatching currencies"));
-        return;
-    }
-
-    if (!ItemEntry || !(ItemEntry->ItemPtr))
-    {
-        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconItemEntry argument"));
+        UE_LOG(LogTemp, Error, TEXT("Invalid or mismatching UNSLEconContainerItem and UNSLEconItemEntry currencies"));
         return;
     }
 

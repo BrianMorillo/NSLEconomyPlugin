@@ -36,7 +36,7 @@ public:
     FString Name;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void SetCurrency(UNSLEconCurrency* NewValue);
+    void SetValueCurrency(UNSLEconCurrency* NewValue);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void SetValue(const UNSLEconMoney* NewValue);

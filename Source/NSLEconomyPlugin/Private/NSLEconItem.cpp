@@ -20,9 +20,9 @@ UNSLEconItem::UNSLEconItem(const FObjectInitializer& ObjectInitializer)
     //Value = NewObject<UNSLEconMoney>(this, UNSLEconMoney::StaticClass());
 } 
 
-void UNSLEconItem::SetCurrency(UNSLEconCurrency* Currency)
+void UNSLEconItem::SetValueCurrency(UNSLEconCurrency* Currency)
 {
-    Value->Initialize(Currency);
+    Value->SetCurrency(Currency);
 }
 
 void UNSLEconItem::SetValue(const UNSLEconMoney* NewValue)

@@ -7,6 +7,7 @@
 #include "NSLEconItemEntry.h"
 #include "NSLEconTypes.h"
 #include "NSLEconMoney.h"
+#include "NSLEconMoneyUtil.h"
 
 void UNSLEconPurchaseTransaction::Execute_Implementation()
 {
@@ -46,9 +47,9 @@ void UNSLEconPurchaseTransaction::Execute_Implementation()
         return;
     }
 
-    if (Buyer->GetMoney()->GetCurrency()->GetCurrencyId() != Seller->GetMoney()->GetCurrency()->GetCurrencyId())
+    if (UNSLEconMoneyUtil::AreValidForOperation(Buyer->GetMoney(), Seller->GetMoney()))
     {
-        UE_LOG(LogTemp, Error, TEXT("Mismatching currencies"));
+        UE_LOG(LogTemp, Error, TEXT("Transaction buyer and seller mismatching currencies"));
         return;
     }
 

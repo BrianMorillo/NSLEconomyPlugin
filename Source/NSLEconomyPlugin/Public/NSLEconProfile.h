@@ -28,5 +28,4 @@ public:
 	UNSLEconMoney* GetMoney();
 
 	virtual void AddItemEntry(UNSLEconItemEntry* ItemEntry) override;
-
 };

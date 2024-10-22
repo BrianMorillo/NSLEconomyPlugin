@@ -46,7 +46,7 @@ UNSLEconMoney* UNSLEconCurrency::CreateCurrencyMoney(const TArray<FNSLEconCurren
 {
 	// Create a new UNSLEconMoney object
 	UNSLEconMoney* NewMoney = NewObject<UNSLEconMoney>(this, UNSLEconMoney::StaticClass());
-	NewMoney->Initialize(this);
+	NewMoney->SetCurrency(this);
 	NewMoney->AddCurrencyUnits(CurrUnitAmountList);
 	return NewMoney;
 }

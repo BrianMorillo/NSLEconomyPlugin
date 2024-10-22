@@ -36,8 +36,8 @@ public:
 	static bool IsUnitsSubstractionAllowed(int64 AmountA, int64 AmountB);
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-	static bool IsOperable(const UNSLEconMoney* Money);
+	static bool IsMoneyValid(const UNSLEconMoney* Money);
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-	static bool IsOperationValid(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB);
+	static bool AreValidForOperation(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB);
 };
