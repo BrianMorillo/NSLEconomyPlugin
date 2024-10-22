@@ -11,10 +11,11 @@
 #include "NSLEconMarket.h"
 #include "NSLEconMoneyUtil.h"
 
-// Constructor - Initializes an empty inventory
-UNSLEconShop::UNSLEconShop()
+UNSLEconShop::UNSLEconShop(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
-    // Create an empty container item for the inventory
+    ShopProfile = ObjectInitializer.CreateDefaultSubobject<UNSLEconProfile>(this, TEXT("UNSLEconShopProfile"));
+    Market = nullptr;
 }
 
 // Add item to shop's inventory

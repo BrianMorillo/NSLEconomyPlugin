@@ -22,7 +22,8 @@ class NSLECONOMYPLUGIN_API UNSLEconShop : public UObject
 
 public:
     // Constructor
-    UNSLEconShop();
+    //UNSLEconShop();
+    UNSLEconShop(const FObjectInitializer& ObjectInitializer);
 
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
     UNSLEconProfile* ShopProfile;

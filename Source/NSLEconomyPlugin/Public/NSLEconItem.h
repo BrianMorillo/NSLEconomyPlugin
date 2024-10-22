@@ -36,19 +36,19 @@ public:
     FString Name;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void SetValueCurrency(UNSLEconCurrency* NewValue);
+    void SetCurrency(UNSLEconCurrency* NewValue);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AssignValue(UNSLEconMoney* NewValue);
+    void SetValue(const UNSLEconMoney* NewValue);
+
+    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    //UNSLEconMoney* AddValue(const UNSLEconMoney* Other);
+
+    //UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+    //UNSLEconMoney* SubstractValue(const UNSLEconMoney* Other);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconMoney* AddValue(const UNSLEconMoney* Other);
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    UNSLEconMoney* SubstractValue(const UNSLEconMoney* Other);
-
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const UNSLEconMoney* GetValue() const;
+    UNSLEconMoney* GetValue() const;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     FGuid GetId() const;

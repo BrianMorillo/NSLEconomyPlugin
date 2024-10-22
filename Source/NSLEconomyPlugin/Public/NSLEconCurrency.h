@@ -71,7 +71,7 @@ public:
 		FGuid GetCurrencyId() const { return CurrencyId; }
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-		int64 CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
+		int64 CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList) const;
 
 	// Function to execute the delegate
 	UFUNCTION(BlueprintCallable)

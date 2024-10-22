@@ -51,7 +51,7 @@ UNSLEconMoney* UNSLEconCurrency::CreateCurrencyMoney(const TArray<FNSLEconCurren
 	return NewMoney;
 }
 
-int64 UNSLEconCurrency::CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
+int64 UNSLEconCurrency::CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList) const
 {
 	int64 TotalUnits = 0;
 	for (const auto& CurrUnitAmount : CurrUnitAmountList)

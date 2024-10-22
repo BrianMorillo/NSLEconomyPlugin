@@ -11,7 +11,6 @@ UNSLEconMoney::UNSLEconMoney()
 {
 }
 
-
 void UNSLEconMoney::Initialize(UNSLEconCurrency* InCurrency) 
 {
     if (Currency.IsValid())

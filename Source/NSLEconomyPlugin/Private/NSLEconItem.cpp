@@ -20,16 +20,16 @@ UNSLEconItem::UNSLEconItem(const FObjectInitializer& ObjectInitializer)
     //Value = NewObject<UNSLEconMoney>(this, UNSLEconMoney::StaticClass());
 } 
 
-void UNSLEconItem::SetValueCurrency(UNSLEconCurrency* Currency)
+void UNSLEconItem::SetCurrency(UNSLEconCurrency* Currency)
 {
     Value->Initialize(Currency);
 }
 
-void UNSLEconItem::AssignValue(UNSLEconMoney* NewValue)
+void UNSLEconItem::SetValue(const UNSLEconMoney* NewValue)
 {
     Value->SetTo(NewValue);
 }
-
+/*
 UNSLEconMoney* UNSLEconItem::AddValue(const UNSLEconMoney* Other)
 {
     return Value->Add(Other);
@@ -38,9 +38,9 @@ UNSLEconMoney* UNSLEconItem::AddValue(const UNSLEconMoney* Other)
 UNSLEconMoney* UNSLEconItem::SubstractValue(const UNSLEconMoney* Other)
 {
     return Value->Substract(Other);
-}
+}*/
 
-const UNSLEconMoney* UNSLEconItem::GetValue() const
+UNSLEconMoney* UNSLEconItem::GetValue() const
 {
     return Value;
 }
