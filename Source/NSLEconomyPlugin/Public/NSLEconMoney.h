@@ -25,9 +25,6 @@ private:
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         int64 CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
 
-    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        bool IsMatchingCurrency(const UNSLEconMoney* Other);
-
 public:
     UNSLEconMoney();
 
@@ -44,7 +41,7 @@ public:
         UNSLEconMoney* Substract(const UNSLEconMoney* Other);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        void SetCurrency(const UNSLEconCurrency* InCurrency);
+        UNSLEconMoney* SetCurrency(const UNSLEconCurrency* InCurrency);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         UNSLEconMoney* AddCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
@@ -63,4 +60,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         static UNSLEconMoney* ScaledBy(const UNSLEconMoney* MoneyToScale, float PercentageToScaleBy);
+
+    UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+        bool MatchesCurrency(const UNSLEconMoney* Other);
 };

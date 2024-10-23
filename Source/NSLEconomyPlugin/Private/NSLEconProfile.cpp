@@ -14,23 +14,20 @@ UNSLEconProfile::UNSLEconProfile(const FObjectInitializer& ObjectInitializer)
 
 void UNSLEconProfile::SetMoney(const UNSLEconMoney* NewValue)
 {
-	if (!UNSLEconMoneyUtil::IsMoneyValid(GetValue()))
+	if (GetValue()->MatchesCurrency(NewValue))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconProfile value currency"));
-		return;
+		GetMoney()->SetTo(NewValue);
 	}
-
-	if (!UNSLEconMoneyUtil::AreValidForOperation(GetValue(), NewValue))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid or mismatching UNSLEconProfile and UNSLEconMoney currencies"));
-		return;
-	}
-
-	GetMoney()->SetTo(NewValue);
 }
 
 UNSLEconMoney* UNSLEconProfile::GetMoney()
 {
+	if (!GetValue()->GetCurrency())
+	{
+		UE_LOG(LogTemp, Error, TEXT("No currency assigned to UNSLEconProfile"));
+		return nullptr;
+	}
+
 	return Money;
 }
 

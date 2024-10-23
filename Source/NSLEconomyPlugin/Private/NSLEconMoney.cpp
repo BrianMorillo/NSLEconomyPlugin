@@ -11,21 +11,22 @@ UNSLEconMoney::UNSLEconMoney()
 {
 }
 
-void UNSLEconMoney::SetCurrency(const UNSLEconCurrency* InCurrency)
+UNSLEconMoney* UNSLEconMoney::SetCurrency(const UNSLEconCurrency* InCurrency)
 {
     if (!InCurrency)
     {
-        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconCurrency"));
-        return;
+        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconCurrency argument"));
+        return nullptr;
     }
 
     if (Currency.IsValid())
     {
         UE_LOG(LogTemp, Error, TEXT("Currency already initialized"));
-        return;
+        return nullptr;
     }
 
     Currency = InCurrency;
+    return this;
 }
 
 const FString UNSLEconMoney::ToFormattedString() const
@@ -36,7 +37,7 @@ const FString UNSLEconMoney::ToFormattedString() const
 
 UNSLEconMoney* UNSLEconMoney::SetTo(const UNSLEconMoney* Other)
 {
-    if (!IsMatchingCurrency(Other))
+    if (!MatchesCurrency(Other))
     {
         return nullptr;
     }
@@ -45,10 +46,31 @@ UNSLEconMoney* UNSLEconMoney::SetTo(const UNSLEconMoney* Other)
     return this;
 }
 
+bool UNSLEconMoney::MatchesCurrency(const UNSLEconMoney* Other)
+{
+    if (!UNSLEconMoneyUtil::IsValidMoney(Other))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconMoney argument"));
+        return false;
+    }
+
+    if (!UNSLEconMoneyUtil::IsValidMoney(this))
+    {
+        SetCurrency(Other->GetCurrency());
+    }
+    else if (GetCurrencyId() != Other->GetCurrencyId())
+    {
+        UE_LOG(LogTemp, Error, TEXT("Currency Mismatch"));
+        return false;
+    }
+
+    return true;
+}
+
 
 UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
 {
-    if (!IsMatchingCurrency(Other))
+    if (!MatchesCurrency(Other))
     {
         return nullptr;
     }
@@ -64,7 +86,7 @@ UNSLEconMoney* UNSLEconMoney::Add(const UNSLEconMoney* Other)
 
 UNSLEconMoney* UNSLEconMoney::Substract(const UNSLEconMoney* Other)
 {
-    if (!IsMatchingCurrency(Other))
+    if (!MatchesCurrency(Other))
     {
         return nullptr;
     }
@@ -127,27 +149,6 @@ int64 UNSLEconMoney::CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> 
     }
 
     return CalculatedUnits;
-}
-
-bool UNSLEconMoney::IsMatchingCurrency(const UNSLEconMoney* Other)
-{
-    if (!UNSLEconMoneyUtil::IsMoneyValid(Other))
-    {
-        UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconMoney"));
-        return false;
-    }
-
-    if (!UNSLEconMoneyUtil::IsMoneyValid(this))
-    {
-        SetCurrency(Other->GetCurrency());
-    }
-    else if (GetCurrencyId() != Other->GetCurrencyId())
-    {
-        UE_LOG(LogTemp, Error, TEXT("Currency Mismatch"));
-        return false;
-    }
-
-    return true;
 }
 
 int64 UNSLEconMoney::GetValueInUnits() const

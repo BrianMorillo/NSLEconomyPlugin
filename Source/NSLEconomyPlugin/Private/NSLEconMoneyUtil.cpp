@@ -48,7 +48,7 @@ bool UNSLEconMoneyUtil::IsUnitsSubstractionAllowed(int64 AmountA, int64 AmountB)
     return true;
 }
 
-bool UNSLEconMoneyUtil::IsMoneyValid(const UNSLEconMoney* Money)
+bool UNSLEconMoneyUtil::IsValidMoney(const UNSLEconMoney* Money)
 {
     if (!Money || !Money->GetCurrency())
     {
@@ -60,7 +60,7 @@ bool UNSLEconMoneyUtil::IsMoneyValid(const UNSLEconMoney* Money)
 
 bool UNSLEconMoneyUtil::AreValidForOperation(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB)
 {
-    if (!IsMoneyValid(MoneyA) || !IsMoneyValid(MoneyB))
+    if (!IsValidMoney(MoneyA) || !IsValidMoney(MoneyB))
     {
         return false;
     }

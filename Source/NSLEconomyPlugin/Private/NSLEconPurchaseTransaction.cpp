@@ -47,7 +47,7 @@ void UNSLEconPurchaseTransaction::Execute_Implementation()
         return;
     }
 
-    if (UNSLEconMoneyUtil::AreValidForOperation(Buyer->GetMoney(), Seller->GetMoney()))
+    if (!UNSLEconMoneyUtil::AreValidForOperation(Buyer->GetMoney(), Seller->GetMoney()))
     {
         UE_LOG(LogTemp, Error, TEXT("Transaction buyer and seller mismatching currencies"));
         return;
