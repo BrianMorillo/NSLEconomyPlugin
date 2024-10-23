@@ -123,7 +123,7 @@ void UNSLEconShop::BuyItem(const FGuid& ItemId, int32 QuantityToPurchase, UNSLEc
 
     if (Market) 
     {
-        Market->RegisterTransaction(Transaction);
+        Market->ProcessTransaction(Transaction);
     }
 }
 

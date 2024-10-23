@@ -34,4 +34,6 @@ public:
 	UNSLEconMoney* PurchasePrice;
 
 	virtual void Execute_Implementation() override;
+
+	virtual bool IsValidTransaction_Implementation() const override;
 };

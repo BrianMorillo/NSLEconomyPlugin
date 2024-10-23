@@ -58,9 +58,19 @@ bool UNSLEconMoneyUtil::IsValidMoney(const UNSLEconMoney* Money)
     return true;
 }
 
-bool UNSLEconMoneyUtil::AreValidForOperation(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB)
+bool UNSLEconMoneyUtil::AreValidMoney(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB)
 {
     if (!IsValidMoney(MoneyA) || !IsValidMoney(MoneyB))
+    {
+        return false;
+    }
+    
+    return true;
+}
+
+bool UNSLEconMoneyUtil::AreValidForOperation(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB)
+{
+    if (!AreValidMoney(MoneyA, MoneyB))
     {
         return false;
     }

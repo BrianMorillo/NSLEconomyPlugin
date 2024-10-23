@@ -46,7 +46,7 @@ public:
 
     // Function to execute the delegate
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void RegisterTransaction(const UNSLEconTransaction* Transaction);
+    void ProcessTransaction(const UNSLEconTransaction* Transaction);
 
     UFUNCTION(BlueprintCallable)
     void BindMarketItemUpdateDelegate(const FMarketItemUpdateDelegate& Delegate);

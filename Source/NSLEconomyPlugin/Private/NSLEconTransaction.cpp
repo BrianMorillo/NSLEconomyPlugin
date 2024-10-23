@@ -7,3 +7,8 @@ void UNSLEconTransaction::Execute_Implementation()
 {
 
 }
+
+bool UNSLEconTransaction::IsValidTransaction_Implementation() const
+{
+	return false;
+}

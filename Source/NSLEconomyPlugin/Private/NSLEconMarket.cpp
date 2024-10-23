@@ -34,8 +34,12 @@ void UNSLEconMarket::AddItemToMarket(UNSLEconMarketEntry* NewMarketEntry)
     ItemRegistry.Add(NewMarketEntry->ItemPtr->GetId(), NewMarketEntry);
 }
 
-void UNSLEconMarket::RegisterTransaction(const UNSLEconTransaction* Transaction)
+void UNSLEconMarket::ProcessTransaction(const UNSLEconTransaction* Transaction)
 {
+    if (!Transaction->IsValidTransaction()) {
+        return;
+    }
+
     const UNSLEconMarketEntry* Entry = *ItemRegistry.Find(Transaction->ItemId);
     if (!Entry)
     {

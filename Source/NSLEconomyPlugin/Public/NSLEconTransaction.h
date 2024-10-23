@@ -22,4 +22,9 @@ public:
 	void Execute();
 
 	virtual void Execute_Implementation();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "NSLEconomy")
+	bool IsValidTransaction() const;
+
+	virtual bool IsValidTransaction_Implementation() const;
 };

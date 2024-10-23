@@ -39,5 +39,8 @@ public:
 	static bool IsValidMoney(const UNSLEconMoney* Money);
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
+	static bool AreValidMoney(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB);
+
+	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
 	static bool AreValidForOperation(const UNSLEconMoney* MoneyA, const UNSLEconMoney* MoneyB);
 };
