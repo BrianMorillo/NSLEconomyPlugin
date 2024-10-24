@@ -4,7 +4,7 @@
 #include "NSLEconShop.h"
 #include "NSLEconContainerItem.h"
 #include "NSLEconMoney.h"
-#include "NSLEconShopItemEntry.h"
+#include "NSLEconPricedItemEntry.h"
 #include "NSLEconTypes.h"
 #include "NSLEconPurchaseTransaction.h"
 #include "NSLEconProfile.h"
@@ -19,8 +19,9 @@ UNSLEconShop::UNSLEconShop(const FObjectInitializer& ObjectInitializer)
 }
 
 // Add item to shop's inventory
-void UNSLEconShop::AddItemEntry(UNSLEconShopItemEntry* ShopItemEntry)
+void UNSLEconShop::AddItemEntry(UNSLEconPricedItemEntry* ShopItemEntry)
 {
+    // remove?
     if (!ShopProfile)
     {
         UE_LOG(LogTemp, Error, TEXT("ShopProfile not initialized"));
@@ -33,12 +34,12 @@ void UNSLEconShop::AddItemEntry(UNSLEconShopItemEntry* ShopItemEntry)
         return;
     }
     
-    int64 ItemValueInUnits = FMath::Abs(ShopItemEntry->ItemPtr->GetValue()->GetValueInUnits());
-    if (ItemValueInUnits > (INT64_MAX / ShopItemEntry->GetPriceMarkup()))
-    {
-        UE_LOG(LogTemp, Error, TEXT("Item addition failed: Item value * price markup > allowable max amount"));
-        return;
-    }
+    //int64 ItemValueInUnits = FMath::Abs(ShopItemEntry->ItemPtr->GetValue()->GetValueInUnits());
+    //if (ItemValueInUnits > (INT64_MAX / ShopItemEntry->GetPriceMarkup()))
+    //{
+    //    UE_LOG(LogTemp, Error, TEXT("Item addition failed: Item value * price markup > allowable max amount"));
+    //    return;
+    //}
 
     ShopProfile->AddItemEntry(ShopItemEntry);
 }
@@ -52,73 +53,71 @@ void UNSLEconShop::RemoveItemEntry(const FGuid& ItemId)
     }
 }
 
-const FShopItemInfo UNSLEconShop::GetItemInfo(const FGuid& ItemId)
+const UNSLEconPricedItemEntry* UNSLEconShop::GetItemInfo(const FGuid& ItemId)
 {
     UNSLEconItemEntry* Entry = ShopProfile->GetEntry(ItemId);
     if (!Entry)
     {
-        return FShopItemInfo();
+        return nullptr;
     }
 
-    UNSLEconShopItemEntry* ItemEntry = Cast<UNSLEconShopItemEntry>(Entry);
-    FShopItemInfo ItemInfo(
-        ItemEntry->GetQuantity(),
-        ItemEntry->ItemPtr,
-        UNSLEconMoney::ScaledBy(ItemEntry->ItemPtr->GetValue(), ItemEntry->GetPriceMarkup()));
-    return ItemInfo;
+    //UNSLEconPricedItemEntry* ItemEntry = Cast<UNSLEconPricedItemEntry>(Entry);
+    //FShopItemInfo ItemInfo(
+    //    ItemEntry->GetQuantity(),
+    //    ItemEntry->ItemPtr,
+    //    UNSLEconMoney::ScaledBy(ItemEntry->ItemPtr->GetValue(), ItemEntry->GetPriceMarkup()));
+    return Cast<UNSLEconPricedItemEntry>(Entry);
 }
 
 
-TArray<FShopItemInfo> UNSLEconShop::GetItems()
+TArray<UNSLEconPricedItemEntry*> UNSLEconShop::GetItems()
 {
-    TArray<FShopItemInfo> ResultList;
+    TArray<UNSLEconPricedItemEntry *> ResultList;
     for (const auto& ItemEntry : ShopProfile->GetEntries())
     {
-        UNSLEconShopItemEntry* ShopItemEntry = Cast<UNSLEconShopItemEntry>(ItemEntry);
-        if (ItemEntry)
-        {
-            FShopItemInfo ItemInfo(
-                ItemEntry->GetQuantity(),
-                ItemEntry->ItemPtr,
-                UNSLEconMoney::ScaledBy(ItemEntry->ItemPtr->GetValue(), ShopItemEntry->GetPriceMarkup()));
-            ResultList.Add(ItemInfo);
-        }
+        //UNSLEconPricedItemEntry* ShopItemEntry = Cast<UNSLEconPricedItemEntry>(ItemEntry);
+        //if (ItemEntry)
+        //{
+        //    FShopItemInfo ItemInfo(
+        //        ItemEntry->GetQuantity(),
+        //        ItemEntry->ItemPtr,
+        //        UNSLEconMoney::ScaledBy(ItemEntry->ItemPtr->GetValue(), ShopItemEntry->GetPriceMarkup()));
+            ResultList.Add(Cast<UNSLEconPricedItemEntry>(ItemEntry));
+        //}
     }
 
     return ResultList; // Return by value (copy)
 }
 
-void UNSLEconShop::AdjustItemMarkup(const FGuid& ItemId, float PriceMarkupPercentage)
+void UNSLEconShop::AdjustItemPrice(const FGuid& ItemId, UNSLEconMoney* NewPrice)
 {
-    UNSLEconShopItemEntry* ItemEntry = Cast<UNSLEconShopItemEntry>(ShopProfile->GetEntry(ItemId));
-    ItemEntry->SetPriceMarkup(PriceMarkupPercentage);
+    UNSLEconItemEntry* ItemEntry = ShopProfile->GetEntry(ItemId);
+
+    if (!ItemEntry) {
+        return;
+    }
+
+    Cast<UNSLEconPricedItemEntry>(ItemEntry)->GetItemPrice()->SetTo(NewPrice);
 }
 
 void UNSLEconShop::BuyItem(const FGuid& ItemId, int32 QuantityToPurchase, UNSLEconProfile* Buyer)
 {
+    const UNSLEconItemEntry* ItemEntry = ShopProfile->GetEntry(ItemId);
 
-    UNSLEconShopItemEntry* ShopEntry = Cast<UNSLEconShopItemEntry>(ShopProfile->GetEntry(ItemId));
-    if (!ShopEntry || !ShopEntry->ItemPtr)
-    {
-        UE_LOG(LogTemp, Error, TEXT("No entry for item found in seller profile"));
+    if (!ItemEntry) {
         return;
     }
 
-    UNSLEconMoney* TotalMoneyToPay = 
-        UNSLEconMoney::ScaledBy(ShopEntry->ItemPtr->GetValue(), ShopEntry->GetPriceMarkup());
-    if (!TotalMoneyToPay)
-    {
-        return;
-    }
-
+    const UNSLEconPricedItemEntry* ShopEntry = Cast<UNSLEconPricedItemEntry>(ItemEntry);
+    
     // Creates and executes transaction
     UNSLEconPurchaseTransaction* Transaction = NewObject<UNSLEconPurchaseTransaction>();
     Transaction->Buyer = Buyer;
     Transaction->QuantityToPurchase = QuantityToPurchase;
     Transaction->ItemId = ItemId;
     Transaction->Seller = ShopProfile;
-    Transaction->MarketTransactionType = ETransactionType::Buy;
-    Transaction->PurchasePrice = TotalMoneyToPay;
+    Transaction->MarketTransactionType = EPurchaseTransactionType::Buy;
+    Transaction->PurchasePrice = ShopEntry->GetItemPrice();
     Transaction->Execute();
 
     if (Market) 

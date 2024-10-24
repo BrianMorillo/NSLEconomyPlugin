@@ -7,7 +7,7 @@
 #include "NSLEconShop.generated.h"
 
 class UNSLEconContainerItem;
-class UNSLEconShopItemEntry;
+class UNSLEconPricedItemEntry;
 class UNSLEconMarket;
 class UNSLEconProfile;
 struct FShopItemInfo;
@@ -38,20 +38,20 @@ public:
 
     // Function to add an item to the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AddItemEntry(UNSLEconShopItemEntry* ShopItemEntry);
+    void AddItemEntry(UNSLEconPricedItemEntry* ShopItemEntry);
 
     // Function to remove an item from the shop's inventory
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void RemoveItemEntry(const FGuid& ItemId);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const FShopItemInfo GetItemInfo(const FGuid& ItemId);
+    const UNSLEconPricedItemEntry* GetItemInfo(const FGuid& ItemId);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    TArray<FShopItemInfo> GetItems();
+    TArray<UNSLEconPricedItemEntry*> GetItems();
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    void AdjustItemMarkup(const FGuid& ItemId, float PriceMarkupPercentage);
+    void AdjustItemPrice(const FGuid& ItemId, UNSLEconMoney* NewPrice);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     void BuyItem(const FGuid& ItemId, int32 QuantityToPurchase, UNSLEconProfile* Buyer);

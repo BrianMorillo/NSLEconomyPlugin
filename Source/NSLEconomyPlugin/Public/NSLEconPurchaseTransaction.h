@@ -28,7 +28,7 @@ public:
 	int32 QuantityToPurchase;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
-	ETransactionType MarketTransactionType;
+	EPurchaseTransactionType MarketTransactionType;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
 	UNSLEconMoney* PurchasePrice;

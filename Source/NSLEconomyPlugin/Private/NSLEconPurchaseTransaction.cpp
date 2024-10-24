@@ -63,7 +63,7 @@ bool UNSLEconPurchaseTransaction::IsValidTransaction_Implementation() const
         return false;
     }
 
-    if (MarketTransactionType != ETransactionType::Buy && MarketTransactionType != ETransactionType::Sell)
+    if (MarketTransactionType != EPurchaseTransactionType::Buy && MarketTransactionType != EPurchaseTransactionType::Sell)
     {
         UE_LOG(LogTemp, Error, TEXT("Invalid transaction type"));
         return false;
