@@ -21,13 +21,6 @@ UNSLEconShop::UNSLEconShop(const FObjectInitializer& ObjectInitializer)
 // Add item to shop's inventory
 void UNSLEconShop::AddItemEntry(UNSLEconPricedItemEntry* ShopItemEntry)
 {
-    // remove?
-    if (!ShopProfile)
-    {
-        UE_LOG(LogTemp, Error, TEXT("ShopProfile not initialized"));
-        return;
-    }
-
     if (!ShopItemEntry)
     {
         UE_LOG(LogTemp, Error, TEXT("Invalid ShopItemEntry"));
