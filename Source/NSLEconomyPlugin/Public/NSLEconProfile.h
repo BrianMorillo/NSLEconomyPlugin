@@ -21,6 +21,12 @@ protected:
 public:
 	UNSLEconProfile(const FObjectInitializer& ObjectInitializer);
 
+	UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+	bool InfiniteMoney = false;
+
+	UPROPERTY(EditAnywhere, Category = "NSLEconomy")
+	bool InfiniteItems = false;
+
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
 	void SetMoney(const UNSLEconMoney* NewValue);
 

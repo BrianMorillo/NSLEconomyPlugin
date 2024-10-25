@@ -33,13 +33,6 @@ void UNSLEconShop::AddItemEntry(UNSLEconPricedItemEntry* ShopItemEntry)
         UE_LOG(LogTemp, Error, TEXT("Invalid ShopItemEntry"));
         return;
     }
-    
-    //int64 ItemValueInUnits = FMath::Abs(ShopItemEntry->ItemPtr->GetValue()->GetValueInUnits());
-    //if (ItemValueInUnits > (INT64_MAX / ShopItemEntry->GetPriceMarkup()))
-    //{
-    //    UE_LOG(LogTemp, Error, TEXT("Item addition failed: Item value * price markup > allowable max amount"));
-    //    return;
-    //}
 
     ShopProfile->AddItemEntry(ShopItemEntry);
 }
@@ -53,7 +46,7 @@ void UNSLEconShop::RemoveItemEntry(const FGuid& ItemId)
     }
 }
 
-const UNSLEconPricedItemEntry* UNSLEconShop::GetItemInfo(const FGuid& ItemId)
+UNSLEconPricedItemEntry* UNSLEconShop::GetItemEntry(const FGuid& ItemId)
 {
     UNSLEconItemEntry* Entry = ShopProfile->GetEntry(ItemId);
     if (!Entry)
@@ -61,11 +54,6 @@ const UNSLEconPricedItemEntry* UNSLEconShop::GetItemInfo(const FGuid& ItemId)
         return nullptr;
     }
 
-    //UNSLEconPricedItemEntry* ItemEntry = Cast<UNSLEconPricedItemEntry>(Entry);
-    //FShopItemInfo ItemInfo(
-    //    ItemEntry->GetQuantity(),
-    //    ItemEntry->ItemPtr,
-    //    UNSLEconMoney::ScaledBy(ItemEntry->ItemPtr->GetValue(), ItemEntry->GetPriceMarkup()));
     return Cast<UNSLEconPricedItemEntry>(Entry);
 }
 
@@ -75,18 +63,10 @@ TArray<UNSLEconPricedItemEntry*> UNSLEconShop::GetItems()
     TArray<UNSLEconPricedItemEntry *> ResultList;
     for (const auto& ItemEntry : ShopProfile->GetEntries())
     {
-        //UNSLEconPricedItemEntry* ShopItemEntry = Cast<UNSLEconPricedItemEntry>(ItemEntry);
-        //if (ItemEntry)
-        //{
-        //    FShopItemInfo ItemInfo(
-        //        ItemEntry->GetQuantity(),
-        //        ItemEntry->ItemPtr,
-        //        UNSLEconMoney::ScaledBy(ItemEntry->ItemPtr->GetValue(), ShopItemEntry->GetPriceMarkup()));
-            ResultList.Add(Cast<UNSLEconPricedItemEntry>(ItemEntry));
-        //}
+        ResultList.Add(Cast<UNSLEconPricedItemEntry>(ItemEntry));
     }
 
-    return ResultList; // Return by value (copy)
+    return ResultList; 
 }
 
 void UNSLEconShop::AdjustItemPrice(const FGuid& ItemId, UNSLEconMoney* NewPrice)

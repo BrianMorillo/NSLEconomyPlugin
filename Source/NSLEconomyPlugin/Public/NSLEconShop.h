@@ -22,7 +22,6 @@ class NSLECONOMYPLUGIN_API UNSLEconShop : public UObject
 
 public:
     // Constructor
-    //UNSLEconShop();
     UNSLEconShop(const FObjectInitializer& ObjectInitializer);
 
     UPROPERTY(EditAnywhere, Category = "NSLEconomy")
@@ -45,7 +44,7 @@ public:
     void RemoveItemEntry(const FGuid& ItemId);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-    const UNSLEconPricedItemEntry* GetItemInfo(const FGuid& ItemId);
+    UNSLEconPricedItemEntry* GetItemEntry(const FGuid& ItemId);
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
     TArray<UNSLEconPricedItemEntry*> GetItems();

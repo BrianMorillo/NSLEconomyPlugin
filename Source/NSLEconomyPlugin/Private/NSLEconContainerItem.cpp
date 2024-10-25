@@ -21,10 +21,12 @@ void UNSLEconContainerItem::AddItemEntry(UNSLEconItemEntry* ItemEntry)
         return;
     }
 
+    // Checks if item is already included and changes quantity instead of reincluding it
     FGuid ItemEntryId = ItemEntry->ItemPtr->GetId();
-    if (FindEntry(ItemEntryId))
+    UNSLEconItemEntry* FoundEntry = FindEntry(ItemEntryId);
+    if (FoundEntry)
     {
-        UE_LOG(LogTemp, Error, TEXT("Item already included"));
+        FoundEntry->SetQuantity(FoundEntry->GetQuantity() + ItemEntry->GetQuantity());
         return;
     }
 
@@ -75,10 +77,10 @@ TArray<UNSLEconItemEntry*> UNSLEconContainerItem::GetEntries()
     TArray<UNSLEconItemEntry*> ResultList;
     for (const auto& EntryId : OrderedEntriesIdList)
     {
-        const UNSLEconItemEntry* Entry = FindEntry(EntryId);
+        UNSLEconItemEntry* Entry = FindEntry(EntryId);
         if (Entry)
         {
-            ResultList.Add(const_cast<UNSLEconItemEntry*>(Entry)); // Cast to non-const to fit the API
+            ResultList.Add(Entry);
         }
     }
 

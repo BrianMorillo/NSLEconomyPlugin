@@ -18,12 +18,23 @@ void UNSLEconPurchaseTransaction::Execute_Implementation()
 
     UNSLEconMoney* TotalMoneyToPay = UNSLEconMoney::ScaledBy(PurchasePrice, QuantityToPurchase);
 
-    Seller->GetMoney()->Add(TotalMoneyToPay);
-    Buyer->GetMoney()->Substract(TotalMoneyToPay);
+    if (!Seller->InfiniteMoney) 
+    {
+        Seller->GetMoney()->Add(TotalMoneyToPay);
+    }
+
+    if (!Buyer->InfiniteMoney)
+    {
+        Buyer->GetMoney()->Substract(TotalMoneyToPay);
+    }
+
 
     UNSLEconItemEntry* SellerItemEntry = Cast<UNSLEconItemEntry>(Seller->GetEntry(ItemId));
     // Handle seller transaction side
-    SellerItemEntry->SetQuantity(SellerItemEntry->GetQuantity() - QuantityToPurchase);
+    if (!Seller->InfiniteItems)
+    {
+        SellerItemEntry->SetQuantity(SellerItemEntry->GetQuantity() - QuantityToPurchase);
+    }
 
     // Handle buyer transaction side
     UNSLEconItemEntry* BoughtItemEntry = DuplicateObject(SellerItemEntry, GetTransientPackage());
@@ -82,7 +93,7 @@ bool UNSLEconPurchaseTransaction::IsValidTransaction_Implementation() const
         return false;
     }
 
-    if (SellerItemEntry->GetQuantity() < QuantityToPurchase)
+    if (!Seller->InfiniteItems && SellerItemEntry->GetQuantity() < QuantityToPurchase)
     {
         UE_LOG(LogTemp, Error, TEXT("Not enough items remaining in seller profile"));
         return false;
@@ -98,17 +109,16 @@ bool UNSLEconPurchaseTransaction::IsValidTransaction_Implementation() const
     }
 
     // Checks if money substraction from buyer operation is possible
-    if (!UNSLEconMoneyUtil::IsSubstractionAllowed(Buyer->GetMoney(), TotalMoneyToPay))
+    if (!Buyer->InfiniteMoney && !UNSLEconMoneyUtil::IsSubstractionAllowed(Buyer->GetMoney(), TotalMoneyToPay))
     {
         return false;
     }
 
     // Checks if money addition to seller operation is possible
-    if (!UNSLEconMoneyUtil::IsAdditionAllowed(Seller->GetMoney(), TotalMoneyToPay))
+    if (!Seller->InfiniteMoney && !UNSLEconMoneyUtil::IsAdditionAllowed(Seller->GetMoney(), TotalMoneyToPay))
     {
         return false;
     }
 
     return true;
-
 }
