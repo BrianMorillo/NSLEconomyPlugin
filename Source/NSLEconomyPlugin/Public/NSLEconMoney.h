@@ -50,7 +50,7 @@ public:
         UNSLEconMoney* SubstractCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);
     
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-        FGuid GetCurrencyId() const { return Currency->GetCurrencyId(); }
+        FGuid GetCurrencyId() const;
 
     UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
         int64 GetValueInUnits() const;

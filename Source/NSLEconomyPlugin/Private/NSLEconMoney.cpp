@@ -123,6 +123,11 @@ UNSLEconMoney* UNSLEconMoney::SubstractCurrencyUnits(const TArray<FNSLEconCurren
     return this;
 }
 
+FGuid UNSLEconMoney::GetCurrencyId() const
+{
+    return GetCurrency() ? Currency->GetCurrencyId() : FGuid();
+}
+
 int64 UNSLEconMoney::CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
 {
     int64 CalculatedUnits = 0;
