@@ -168,6 +168,11 @@ const UNSLEconCurrency* UNSLEconMoney::GetCurrency() const
 
 UNSLEconMoney* UNSLEconMoney::ScaledBy(const UNSLEconMoney* MoneyToScale, float PercentageToScaleBy)
 {
+    if (!UNSLEconMoneyUtil::IsValidMoney(MoneyToScale)) {
+        UE_LOG(LogTemp, Error, TEXT("Invalid Money"));
+        return nullptr;
+    }
+
     if (!UNSLEconMoneyUtil::IsScalingAllowed(MoneyToScale, PercentageToScaleBy)) {
         UE_LOG(LogTemp, Error, TEXT("Scaling operation exceeds the allowable max result"));
         return nullptr;
