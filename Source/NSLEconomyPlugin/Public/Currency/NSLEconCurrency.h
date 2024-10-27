@@ -14,7 +14,6 @@ struct FNSLEconCurrencyUnitAmount;
 DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FString, FUnitsToFormattedCurrencyDelegate, int64, AmountToFormat);
 
 DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(UNSLEconMoney*, FStrToMoneyDelegate, FString, StrToMoney);
-//DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(int64, FCurrencyToUnitsDelegate, int32, CurrencyUnits);
 
 /**
  * 
@@ -32,7 +31,7 @@ private:
 		FString CurrencyName;
 
 	UPROPERTY()
-		TMap<FGuid, UNSLEconCurrencyUnit*> CurrencyUnitMap;
+		TMap<FString, UNSLEconCurrencyUnit*> CurrencyUnitMap;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "NSLEconomy")
 		FUnitsToFormattedCurrencyDelegate UnitsToFormattedCurrencyDel;
@@ -51,10 +50,10 @@ public:
 		FString GetCurrencyName() const;
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-		void RemoveCurrencyUnit(FGuid CurrencyUnitId);
+		void RemoveCurrencyUnit(const FString& CurrencyUnitName);
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
-		FGuid AddCurrencyUnit(const FString& CurrencyUnitName, int32 UnitConversionFactor);
+		UNSLEconCurrencyUnit* AddCurrencyUnit(UNSLEconCurrencyUnit* CurrencyUnit);
 
 	UFUNCTION(BlueprintCallable, Category = "NSLEconomy")
 		UNSLEconMoney* CreateCurrencyMoney(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList);

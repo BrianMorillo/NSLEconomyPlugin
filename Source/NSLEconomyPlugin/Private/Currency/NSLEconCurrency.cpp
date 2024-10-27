@@ -23,22 +23,24 @@ FString UNSLEconCurrency::GetCurrencyName() const
 	return CurrencyName;
 }
 
-FGuid UNSLEconCurrency::AddCurrencyUnit(const FString& CurrencyUnitName, int32 UnitConversionFactor)
+UNSLEconCurrencyUnit* UNSLEconCurrency::AddCurrencyUnit(UNSLEconCurrencyUnit* CurrencyUnit)
 {
-	FGuid NewGuid = FGuid::NewGuid();
-	UNSLEconCurrencyUnit* NewCurrencyUnit = NewObject<UNSLEconCurrencyUnit>(this, UNSLEconCurrencyUnit::StaticClass());
-	NewCurrencyUnit->Initialize(CurrencyUnitName, UnitConversionFactor);
-	CurrencyUnitMap.Add(NewGuid, NewCurrencyUnit);
+	if (!CurrencyUnit) {
+		UE_LOG(LogTemp, Error, TEXT("Invalid UNSLEconCurrencyUnit"));
+		return nullptr;
+	}
 
-	return NewGuid;
+	CurrencyUnitMap.Add(CurrencyUnit->GetUnitName(), CurrencyUnit);
+
+	return *CurrencyUnitMap.Find(CurrencyUnit->GetUnitName());
 }
 
 
-void UNSLEconCurrency::RemoveCurrencyUnit(FGuid CurrencyUnitId)
+void UNSLEconCurrency::RemoveCurrencyUnit(const FString& CurrencyUnitName)
 {
-	if (CurrencyUnitMap.Contains(CurrencyUnitId))
+	if (CurrencyUnitMap.Contains(CurrencyUnitName))
 	{
-		CurrencyUnitMap.Remove(CurrencyUnitId);
+		CurrencyUnitMap.Remove(CurrencyUnitName);
 	}
 }
 
@@ -56,10 +58,11 @@ int64 UNSLEconCurrency::CurrencyUnitsToUnits(const TArray<FNSLEconCurrencyUnitAm
 	int64 TotalUnits = 0;
 	for (const auto& CurrUnitAmount : CurrUnitAmountList)
 	{
-		UNSLEconCurrencyUnit* CurrencyUnitPtr = (*CurrencyUnitMap.Find(CurrUnitAmount.CurrencyUnitId));
+		UNSLEconCurrencyUnit* CurrencyUnitPtr = (*CurrencyUnitMap.Find(CurrUnitAmount.CurrencyUnitName));
 
 		if (CurrencyUnitPtr == nullptr)
 		{
+			UE_LOG(LogTemp, Error, TEXT("%s Not a %s valid currency unit"), *CurrUnitAmount.CurrencyUnitName, *CurrencyName);
 			return 0;
 		}
 
@@ -109,20 +112,3 @@ void UNSLEconCurrency::BindFormattedCurrencyToMoneyDelegate(const FStrToMoneyDel
 {
 	StrToMoneyDel = Delegate;
 }
-
-
-//void UNSLEconCurrency::CreateCurrencyUnit(const FString& CurrencyUnitName, float ConversionFactor)
-//{
-//	// Create a new Guid for the currency unit
-//	FGuid NewGuid = FGuid::NewGuid();
-//
-//	// Create a new UNSLEconCurrencyUnit object and initialize it
-//	UNSLEconCurrencyUnit* NewCurrencyUnit = NewObject<UNSLEconCurrencyUnit>(this, UNSLEconCurrencyUnit::StaticClass());
-//	if (NewCurrencyUnit)
-//	{
-//		NewCurrencyUnit->Initialize(CurrencyUnitName, ConversionFactor);
-//
-//		// Add the new unit to the map
-//		AddCurrencyUnit(NewGuid, NewCurrencyUnit);
-//	}
-//}

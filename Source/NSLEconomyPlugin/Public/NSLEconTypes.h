@@ -21,20 +21,20 @@ struct NSLECONOMYPLUGIN_API FNSLEconCurrencyUnitAmount
     int32 Amount;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "NSLEconomy")
-    FGuid CurrencyUnitId;
+    FString CurrencyUnitName;
 
     // Constructor for convenience
     FNSLEconCurrencyUnitAmount()
-        : Amount(0), CurrencyUnitId()
+        : Amount(0), CurrencyUnitName("")
     {}
 
     // Constructor for convenience
     FNSLEconCurrencyUnitAmount(int32 InAmount)
-        : Amount(InAmount), CurrencyUnitId()
+        : Amount(InAmount), CurrencyUnitName("")
     {}
 
-    FNSLEconCurrencyUnitAmount(int32 InAmount, FGuid InCurrencyUnitId)
-        : Amount(InAmount), CurrencyUnitId(InCurrencyUnitId)
+    FNSLEconCurrencyUnitAmount(int32 InAmount, FString InCurrencyUnitName)
+        : Amount(InAmount), CurrencyUnitName(InCurrencyUnitName)
     {}
 };
 

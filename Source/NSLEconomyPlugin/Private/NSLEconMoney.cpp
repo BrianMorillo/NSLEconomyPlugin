@@ -130,30 +130,13 @@ FGuid UNSLEconMoney::GetCurrencyId() const
 
 int64 UNSLEconMoney::CalcCurrencyUnits(const TArray<FNSLEconCurrencyUnitAmount> CurrUnitAmountList)
 {
-    int64 CalculatedUnits = 0;
-    if (Currency.IsValid())
+    if (!UNSLEconMoneyUtil::IsValidMoney(this)) 
     {
-        CalculatedUnits = Currency->CurrencyUnitsToUnits(CurrUnitAmountList);
-    }
-    else {
-        for (const FNSLEconCurrencyUnitAmount& CurrUnitAmount : CurrUnitAmountList)
-        {
-            if (CurrUnitAmount.CurrencyUnitId.IsValid())
-            {
-                UE_LOG(LogTemp, Error, TEXT("FNSLEconCurrencyUnitAmount list invalid for operation"));
-                return 0;
-            }
-
-            if (!UNSLEconMoneyUtil::IsUnitsAdditionAllowed(CalculatedUnits, CurrUnitAmount.Amount)) {
-                UE_LOG(LogTemp, Error, TEXT("CurrencyUnitsToUnits conversion exceeds the allowable max result"));
-                return 0;
-            }
-
-            CalculatedUnits += CurrUnitAmount.Amount;
-        }
+        UE_LOG(LogTemp, Error, TEXT("This UNSLEconMoney object is invalid"));
+        return 0;
     }
 
-    return CalculatedUnits;
+    return Currency->CurrencyUnitsToUnits(CurrUnitAmountList);;
 }
 
 int64 UNSLEconMoney::GetValueInUnits() const
