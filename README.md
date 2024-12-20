@@ -1,7 +1,6 @@
 # NSLEconomyPlugin
-
 C++ economy plugin for Unreal Engine.
-Features:
+# Features:
 
 - Money
 - Currencies
